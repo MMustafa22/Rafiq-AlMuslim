@@ -1,0 +1,63 @@
+/* ============================================================
+   رفيق المسلم — صفحة المصحف على الموبايل (v5)
+   الهدف: الصفحة تظهر بنسبتها الحقيقية (بدون أي مطّ)، كبيرة بملء عرض
+   الشاشة من الحافة للحافة، على ورق دافئ مريح للعين، وأزرار كبيرة
+   لكبار السن. الكمبيوتر لا يتأثر (كل القواعد داخل media للموبايل).
+   --pg-ratio = عرض الصورة ÷ ارتفاعها، يضبطها rafiq-mushaf-fit.js
+   من الصورة نفسها، فتصح مع أي نسخة من المصحف.
+   ============================================================ */
+:root{--pg-ratio:.6195;--rm-paper:#fffdf5;--rm-paper-2:#f4ecd4;--rm-gold:#b8912a}
+
+/* ---------- القراءة العادية على الموبايل ---------- */
+@media (max-width:700px){
+  html body .quran-reading-split{padding:0!important;gap:0!important;max-width:100%!important}
+  html body #readerView .page-image-area{background:var(--rm-paper-2)!important;min-height:0!important}
+  html body #readerView .img-wrapper{
+    background:var(--rm-paper)!important;box-shadow:none!important;border-radius:0!important;
+    /* حجز مكان الصفحة قبل تحميلها حتى لا تقفز الشاشة */
+    min-height:calc(100vw / var(--pg-ratio))!important;
+    border-bottom:2px solid rgba(184,145,42,.45)!important}
+  html body #readerView .mushaf-page-img{
+    width:100%!important;max-width:100%!important;height:auto!important;
+    object-fit:contain!important;margin:0!important;border-radius:0!important;box-shadow:none!important;
+    -webkit-touch-callout:none}
+  /* المشغّل لا يغطي الصفحة أثناء القراءة */
+  html body .audio-player-container{position:relative!important}
+
+  /* أزرار تنقّل كبيرة وواضحة لكبار السن */
+  html body #navBar.nav-bar{grid-template-columns:1fr 1fr!important;gap:10px!important;padding:12px 12px calc(14px + env(safe-area-inset-bottom,0px))!important;background:var(--rm-paper-2)!important}
+  html body #navBar .nav-btn:nth-of-type(1),
+  html body #navBar .nav-btn:nth-of-type(2){min-height:68px!important;font-size:1.2rem!important;font-weight:800!important;border-radius:18px!important}
+  html body #navBar .nav-btn:nth-of-type(3),
+  html body #navBar .nav-btn:nth-of-type(4){min-height:58px!important;font-size:1.02rem!important;font-weight:700!important;border-radius:16px!important}
+  html body #navBar .nav-jump-wrap{min-height:58px!important}
+  html body #navBar .nav-jump-input{font-size:1.2rem!important;height:50px!important;max-width:none!important;text-align:center}
+}
+
+/* ---------- وضع القراءة بملء الشاشة (ضغطتان) ---------- */
+/* أكبر حجم ممكن دون تشويه: عرض الشاشة كاملًا، أو ارتفاعها إن كانت أقصر */
+html body .immersive .page-image-area{background:var(--rm-paper)!important}
+html body .immersive .img-wrapper{
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  background:radial-gradient(120% 90% at 50% 50%,#fffef9 0,var(--rm-paper) 55%,#f6efd8 100%)!important;
+  min-height:0!important;border:0!important}
+html body .immersive .mushaf-page-img{
+  width:min(100vw,calc(100dvh * var(--pg-ratio)))!important;height:auto!important;
+  max-width:100vw!important;max-height:100dvh!important;
+  object-fit:contain!important;object-position:center!important;
+  margin:0 auto!important;display:block!important;border-radius:0!important;box-shadow:none!important}
+
+/* ---------- قلب الصفحة (حركة هادئة) ---------- */
+@keyframes rmcIn{from{transform:translateX(var(--rmc-from,-26px))}to{transform:none}}
+html[data-rm-dir="n"]{--rmc-from:-26px}html[data-rm-dir="p"]{--rmc-from:26px}
+html[data-rm-dir] #mushafImg{animation:rmcIn .34s cubic-bezier(.2,.8,.2,1)}
+@media (prefers-reduced-motion:reduce){html[data-rm-dir] #mushafImg{animation:none}}
+
+/* ---------- صفحة داكنة للعين (ليلًا) ---------- */
+html.rm-night #mushafImg{filter:invert(1) hue-rotate(180deg) brightness(.88) contrast(.96)}
+html.rm-night body #readerView .page-image-area,
+html.rm-night body #readerView .img-wrapper,
+html.rm-night body .immersive .page-image-area,
+html.rm-night body .immersive .img-wrapper{background:#15120b!important}
+html.rm-night body #readerView .img-wrapper{border-bottom-color:rgba(212,175,55,.3)!important}
+
