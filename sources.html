@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-<head><meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: blob: 'unsafe-inline' 'unsafe-eval'; object-src 'none'; base-uri 'self'; form-action 'self'">
-<meta charset="UTF-8">
+<head><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; media-src 'self' blob: https:; font-src 'self' data:; connect-src 'self' https:; frame-src 'self'; worker-src 'self' blob:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta charset="UTF-8"><meta name="referrer" content="strict-origin-when-cross-origin"><script src="./rafiq-storage-shim.js"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>المصادر والمراجع — رفيق المسلم</title>
 <meta name="theme-color" content="#d4af37">
 <meta name="description" content="المصادر والمراجع المعتمدة في محتوى تطبيق رفيق المسلم: المصحف، التفسير، الفقه، الأذكار، السيرة، والتلاوات">
 <link rel="manifest" href="./manifest.json">
 <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32.png">
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./rafiq-fonts.css?v=1">
 <style>
 :root{--gold:#d4af37;--gold-d:#a07820;--bg:#050b14;--card:#0f172a;--ink:#f0e6c8;--panel-border:rgba(212,175,55,.35)}
-body:not(.dark-mode){--gold:#a07820;--bg:#f4f0e4;--card:#fffdf5;--ink:#2a1800;--panel-border:rgba(160,120,32,.3)}
+body:not(.dark-mode){--gold-d:#7a5a10;--gold:#7a5a10;--bg:#f4f0e4;--card:#fffdf5;--ink:#2a1800;--panel-border:rgba(160,120,32,.3)}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:Tajawal,sans-serif;background:var(--bg);color:var(--ink);direction:rtl;min-height:100dvh;transition:background .4s,color .4s}
 .wrap{max-width:860px;margin:0 auto;padding:24px 16px 60px}
@@ -46,7 +46,7 @@ body.dark-mode .src-u{color:#7ab0ff}
 </style>
 </head>
 <body>
-<div class="wrap">
+<div class="wrap" role="main">
   <div class="top">
     <a class="back" href="./index.html" onclick="if(history.length>1&&document.referrer&&document.referrer.indexOf(location.origin)===0){history.back();return false}">→ الرئيسية</a>
     <h1>📚 المصادر والمراجع
@@ -57,7 +57,7 @@ body.dark-mode .src-u{color:#7ab0ff}
     حرصنا في «رفيق المسلم» أن يكون كل محتوى شرعي في التطبيق — من قرآن وتفسير وفقه وأذكار وسيرة وقصص — منقولًا من مصادره الأصلية المعتمدة وموثقًا بها. وهذه قائمة كاملة بالمصادر التي نقلنا منها، مع بيان جهة الإصدار والمؤلفين أصحاب الحقوق، جزاهم الله عنا خير الجزاء.
   </div>
   <div class="note" style="margin-bottom:18px">
-    🔐 الخصوصية: عند تفعيل «تحديد الموقع تلقائيًا» (وهو الخيار الافتراضي) يرسل التطبيق عنوان IP أو إحداثياتك إلى خدمات تحديد المواقع الخارجية (ipwho.is، ipapi.co، get.geojs.io، api.bigdatacloud.net) لمعرفة المدينة والدولة وحساب المواقيت والقبلة. يمكنك إيقاف ذلك واختيار موقعك يدويًا من «تغيير الموقع». بيانات المسابقة (البريد وواتساب) تُحفظ محليًا على هذا الجهاز فقط.
+    🔐 الخصوصية: عند تفعيل «تحديد الموقع تلقائيًا» (وهو الخيار الافتراضي) يرسل التطبيق عنوان IP أو إحداثياتك إلى خدمات تحديد المواقع الخارجية (ipwho.is، ipapi.co، get.geojs.io، api.bigdatacloud.net) لمعرفة المدينة والدولة وحساب المواقيت والقبلة. يمكنك إيقاف ذلك واختيار موقعك يدويًا من «تغيير الموقع». نقاط التحدّي وهدفك تُحفظ محليًا على هذا الجهاز فقط، ولا يوجد تسجيل ببريد أو واتساب.
   </div>
   <div id="srcBody"></div>
   <div class="note" id="srcNote"></div>

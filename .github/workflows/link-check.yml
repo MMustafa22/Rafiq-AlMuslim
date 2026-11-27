@@ -1,0 +1,50 @@
+# فحص أسبوعي لروابط رفيق المسلم (archive.org / GitHub / mp3quran / صور المصحف).
+# ضع هذا المجلد .github في جذر المستودع. لو كان جذر المستودع هو المجلد الأب،
+# غيّر working-directory أدناه إلى مجلد المشروع.
+name: Link health
+on:
+  schedule:
+    - cron: '0 5 * * 0'      # كل أحد 05:00 UTC
+  workflow_dispatch:
+permissions:
+  contents: read
+  issues: write
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Run link check
+        id: lc
+        run: |
+          set +e
+          node tools/check-links.mjs --concurrency=6
+          echo "code=$?" >> "$GITHUB_OUTPUT"
+          exit 0
+      - name: Upload report
+        uses: actions/upload-artifact@v4
+        with:
+          name: link-report
+          path: reports/
+      - name: Open or update an issue when links are broken
+        if: steps.lc.outputs.code == '1'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          title="🔗 روابط أو قرّاء معطّلون ($(date -u +%F))"
+          existing=$(gh issue list --label link-health --state open --json number --jq '.[0].number')
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body-file reports/link-report.md
+          else
+            gh label create link-health --color FBCA04 --description "فحص الروابط الدوري" 2>/dev/null || true
+            gh issue create --title "$title" --label link-health --body-file reports/link-report.md
+          fi
+      - name: Note when the check could not run
+        if: steps.lc.outputs.code == '2'
+        run: echo "::warning::لم يصل أغلب الفحوص (لا اتصال/حجب). لم يُحكم على الروابط."

@@ -245,7 +245,16 @@
     });
     audio.addEventListener("play", function () { playbackWanted = true; delete audio.dataset.rfqPausedByOther; });
     audio.addEventListener("pause", function () { if (!audio.error && !retryTimer && !recovering) { playbackWanted = false; clearStall(); clearStatus(); } });
-    audio.addEventListener("ended", function () { playbackWanted = false; retryCount = 0; clearStall(); });
+    audio.addEventListener("ended", function () {
+      retryCount = 0; clearStall();
+      /* انتهاء سورة وبعدها سورة تالية = المستخدم ما زال يريد الاستماع (الانتقال التلقائي).
+         لو صُفّرت الحالة هنا ثم فشل تحميل السورة التالية (انقطاع لحظي وقت الانتقال)
+         تتجاهل منظومة الاسترجاع الخطأ وتقف التلاوة للأبد. */
+      var more = false;
+      try { more = typeof _surahNum === "number" && _surahNum < 114 && !audio.loop && audio.dataset.rfqPausedByOther !== "1"; } catch (e) {}
+      playbackWanted = more;
+      if (more) audio.dataset.want = "1";
+    });
     audio.addEventListener("waiting", function () { if (playbackWanted) { status("⏳ الاتصال بطيء — جارٍ تحميل التلاوة دون تخطي الآيات."); armStallWatch(); } });
     audio.addEventListener("stalled", function () { if (playbackWanted) { status("⏳ توقف تدفق الصوت مؤقتًا — نحاول استعادته مع حفظ موضع القراءة."); armStallWatch(); } });
     audio.addEventListener("playing", function () {
@@ -261,6 +270,49 @@
     }
     window.addEventListener("online", resumeIfDead);
     document.addEventListener("visibilitychange", function () { if (!document.hidden) resumeIfDead(); });
+    /* واجهة للمكوّنات الأخرى (مؤقت النوم): "هل المستخدم ما زال يريد الاستماع؟" */
+    window.__rfqAudioWant = function (v) {
+      playbackWanted = !!v;
+      try { audio.dataset.want = v ? "1" : "0"; audio.__rfqWanted = !!v; } catch (e) {}
+      if (!v) { retryCount = 0; try { clearStall(); } catch (e) {} }
+    };
+
+    /* Media Session: تحكّم من الإشعار/الشاشة المقفولة، ويعتبر النظام التلاوة "وسائط جارية" فلا يوقفها في الخلفية. */
+    (function initMediaSession() {
+      if (!("mediaSession" in navigator) || typeof window.MediaMetadata !== "function") return;
+      var ms = navigator.mediaSession;
+      function meta() {
+        try {
+          var rd = selectedReader();
+          var nm = (typeof _surahName === "string" && _surahName) ? _surahName.replace(/^سورة\s*/, "") : "";
+          ms.metadata = new MediaMetadata({
+            title: nm ? "سورة " + nm : "القرآن الكريم",
+            artist: rd ? rd.name : "رفيق المسلم",
+            album: "رفيق المسلم — القرآن الكريم"
+          });
+        } catch (e) {}
+      }
+      function act(name, fn) { try { ms.setActionHandler(name, fn); } catch (e) {} }
+      act("play", function () { var p = audio.play(); if (p && p.catch) p.catch(function () {}); });
+      act("pause", function () { audio.pause(); });
+      act("previoustrack", function () { if (typeof window.mpPrevSurah === "function") window.mpPrevSurah(); });
+      act("nexttrack", function () { if (typeof window.mpNextSurah === "function") window.mpNextSurah(); });
+      act("seekbackward", function (d) { try { audio.currentTime = Math.max(0, audio.currentTime - ((d && d.seekOffset) || 10)); } catch (e) {} });
+      act("seekforward", function (d) { try { audio.currentTime = Math.min(audio.duration || 1e9, audio.currentTime + ((d && d.seekOffset) || 10)); } catch (e) {} });
+      act("seekto", function (d) { try { if (d && isFinite(d.seekTime)) audio.currentTime = d.seekTime; } catch (e) {} });
+      var lastPos = 0;
+      function pos() {
+        try {
+          if (!ms.setPositionState || !isFinite(audio.duration) || audio.duration <= 0) return;
+          var now = Date.now(); if (now - lastPos < 2000) return; lastPos = now;
+          ms.setPositionState({ duration: audio.duration, playbackRate: 1, position: Math.min(audio.currentTime || 0, audio.duration) });
+        } catch (e) {}
+      }
+      audio.addEventListener("loadedmetadata", function () { meta(); pos(); });
+      audio.addEventListener("play", function () { meta(); try { ms.playbackState = "playing"; } catch (e) {} });
+      audio.addEventListener("pause", function () { if (!audio.ended) { try { ms.playbackState = "paused"; } catch (e) {} } });
+      audio.addEventListener("timeupdate", pos);
+    })();
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", setup, { once: true });

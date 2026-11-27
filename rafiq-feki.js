@@ -42,7 +42,7 @@ var css='#feki.page{padding-bottom:40px}.fk-wrap{max-width:900px;margin:0 auto;p
 ' @media(max-width:560px){.fk-controls{grid-template-columns:1fr}.fk-episode{grid-template-columns:1fr}.fk-actions{justify-content:flex-start}.fk-action{flex:1}.fk-head h1{font-size:1.35rem}}';
 
 function esc(s){return String(s||'').replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
-function ar(n){return Number(n||0).toLocaleString('ar-EG')}
+function ar(n){return Number(n||0).toLocaleString('en-US')}
 
 function dbOpen(){return new Promise(function(resolve,reject){var req=indexedDB.open(DB,1);req.onupgradeneeded=function(){var d=req.result;if(!d.objectStoreNames.contains(STORE))d.createObjectStore(STORE,{keyPath:'file'})};req.onsuccess=function(){resolve(req.result)};req.onerror=function(){reject(req.error)}})}
 function tx(mode,fn){return dbOpen().then(function(d){return new Promise(function(resolve,reject){var t=d.transaction(STORE,mode),s=t.objectStore(STORE),r=fn(s);t.oncomplete=function(){d.close();resolve(r&&r.result)};t.onerror=function(){d.close();reject(t.error)};t.onabort=function(){d.close();reject(t.error)}})})}
@@ -198,9 +198,9 @@ function ensureUI(){
   var p=document.createElement('section');p.id='feki';p.className='container page';
   p.innerHTML='<div class="fk-wrap"><button class="fk-back" onclick="shPg(\'mainApp\')">← رجوع للرئيسية</button>'+
     '<header class="fk-head"><div class="fk-em">🎧</div><h1>د. إبراهيم الفقي</h1>'+
-    '<p>سلسلة «الطريق إلى النجاح» كاملة — ٢٨ حلقة صوتية في تطوير الذات والنجاح. استمع مباشرة، أو نزّل الحلقة على جهازك، أو احفظها داخل التطبيق للاستماع دون إنترنت.</p>'+
+    '<p>سلسلة «الطريق إلى النجاح» كاملة — 28 حلقة صوتية في تطوير الذات والنجاح. استمع مباشرة، أو نزّل الحلقة على جهازك، أو احفظها داخل التطبيق للاستماع دون إنترنت.</p>'+
     '<div class="fk-meta" id="fkCount">جارٍ تجهيز فهرس الحلقات…</div>'+
-    '<div class="fk-bulk-bar"><button type="button" class="fk-action fk-bulk-button" id="fkDownloadAll">⬇ تنزيل السلسلة كلها</button><span>٢٨ حلقة · الحجم التقريبي '+(total/1048576).toFixed(0)+' ميجابايت</span></div>'+
+    '<div class="fk-bulk-bar"><button type="button" class="fk-action fk-bulk-button" id="fkDownloadAll">⬇ تنزيل السلسلة كلها</button><span>28 حلقة · الحجم التقريبي '+(total/1048576).toFixed(0)+' ميجابايت</span></div>'+
     '<div class="fk-cite">مصدر التسجيلات: <a href="'+SOURCE+'" target="_blank" rel="noopener">Internet Archive — سلسلة طريق النجاح للدكتور إبراهيم الفقي</a>. يتم التشغيل والتنزيل من المصدر مباشرة ولا تُضمّن ملفات الصوت ضمن تحديث التطبيق.</div></header>'+
     '<div class="fk-storage" id="fkStorage">الحلقات المحفوظة تبقى في مساحة هذا المتصفح بعد تحديث التطبيق ما دام التطبيق يعمل على النطاق نفسه ولم تُمسح بيانات الموقع. لتنزيل دائم خارج التطبيق اختر «تنزيل للجهاز».</div>'+
     '<div class="fk-now" id="fkNow" hidden><div class="fk-now-head"><strong id="fkNowTitle"></strong><button type="button" class="fk-car-btn" id="fkCarBtn">🚗 شاشة السيارة</button></div><audio id="fkAudio" controls preload="none"></audio></div>'+

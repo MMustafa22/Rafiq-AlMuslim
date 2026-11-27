@@ -1,7 +1,7 @@
 /* ============================================================
    رفيق المسلم — «القراءة المريحة» لصفحة المصحف
    1) قصّ الهوامش الفاضية تلقائيًا (يكشفها من الصورة نفسها؛ لا يقصّ الإطار ولا الزخرفة)
-   2) تكبير تلقائي مريح (١٫٥× افتراضيًا) ويتذكّر اختيارك
+   2) تكبير تلقائي مريح (1.5× افتراضيًا) ويتذكّر اختيارك
    3) صفحة بخلفية داكنة للعين ليلًا، وحركة قلب صفحة هادئة
    كل الاختيارات تُحفظ على الجهاز. يعتمد على quran-zoom.js (RafiqQuranZoom).
    ============================================================ */
@@ -9,7 +9,7 @@
   'use strict';
   var $ = function (id) { return document.getElementById(id); };
   var K_ON = 'rm_cmf_on', K_Z = 'rm_cmf_z', K_NIGHT = 'rm_cmf_night', K_SEEN = 'rm_cmf_seen';
-  var MAX_CROP = 0.10;            /* لا نقصّ أكثر من ١٠٪ من أي جهة مهما حدث */
+  var MAX_CROP = 0.10;            /* لا نقصّ أكثر من 10٪ من أي جهة مهما حدث */
   var st = { on: true, z: 1, night: false };
   var blobs = [];
   var ar = function (n) { return String(n); };
@@ -20,7 +20,7 @@
   var K_FIT = 'rm_cmf_fit_v1';
   function load() {
     var on = lsGet(K_ON); st.on = on === null ? isPhone() : on === '1';   /* افتراضيًا: مفعّل على الموبايل فقط */
-    /* مرة واحدة: الصفحة تبدأ بعرض الشاشة كاملًا (١×) بدل تكبير ١٫٥× الذي كان يقصّها عرضًا */
+    /* مرة واحدة: الصفحة تبدأ بعرض الشاشة كاملًا (1×) بدل تكبير 1.5× الذي كان يقصّها عرضًا */
     if (!lsGet(K_FIT)) {
       try { lsSet(K_FIT, '1'); lsSet(K_Z, '1'); lsSet('rm_qz', '1'); } catch (e) {}
       st.z = 1;
@@ -115,26 +115,7 @@
   function labelZ(v) { return v <= 1.05 ? 'عادي' : v < 1.4 ? 'قليلًا' : v < 1.8 ? 'مريح' : v < 2.3 ? 'كبير' : 'كبير جدًا'; }
 
   /* ---------------- الواجهة ---------------- */
-  var css = '\
-#rmcSheet{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));max-height:88dvh;overflow:auto;transform:translate(-50%,16px);width:min(94vw,400px);z-index:3100;direction:rtl;background:#fffdf0;color:#3a2a00;border:2px solid #b8912a;border-radius:24px;padding:16px;box-shadow:0 22px 60px rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;font-family:Tajawal,sans-serif}\
-#rmcSheet.open{opacity:1;pointer-events:auto;transform:translate(-50%,0)}\
-body.dark-mode #rmcSheet{background:#13203a;color:#f3ecd2;border-color:rgba(212,175,55,.7)}\
-.rmc-h{display:flex;justify-content:space-between;align-items:center;font-weight:900;font-size:1.15rem;margin-bottom:12px}\
-.rmc-x{border:0;background:rgba(212,175,55,.22);color:inherit;width:42px;height:42px;border-radius:50%;font-size:1.1rem;cursor:pointer}\
-.rmc-row{display:flex;align-items:center;gap:12px;padding:12px;border-radius:16px;background:rgba(212,175,55,.13);cursor:pointer;margin-bottom:10px;-webkit-tap-highlight-color:transparent}\
-.rmc-row .t{flex:1;font-weight:800;font-size:1rem;line-height:1.5}.rmc-row .t small{display:block;font-weight:600;opacity:.8;font-size:.8rem}\
-.rmc-sw{width:58px;height:34px;border-radius:999px;background:#8a8a8a;position:relative;flex:0 0 58px;transition:background .2s}\
-.rmc-sw::after{content:"";position:absolute;top:4px;right:4px;width:26px;height:26px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 2px 4px rgba(0,0,0,.4)}\
-.rmc-row.on .rmc-sw{background:#2d9a4a}.rmc-row.on .rmc-sw::after{transform:translateX(-24px)}\
-.rmc-sizes{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:2px 0 10px}\
-.rmc-chip{border:2px solid rgba(184,145,42,.7);background:transparent;color:inherit;border-radius:16px;min-height:66px;font:900 1.15rem Tajawal,sans-serif;cursor:pointer;line-height:1.3}\
-.rmc-chip small{display:block;font-weight:700;opacity:.75;font-size:.8rem}\
-.rmc-chip.on{background:linear-gradient(135deg,#f6dc8c,#c9972b);color:#2a1c00;border-color:#8a6414}\
-.rmc-tip{font-size:.82rem;line-height:1.8;opacity:.85;padding:2px 4px}\
-#rmcSheet.off .rmc-sizes,#rmcSheet.off .rmc-tip.z{opacity:.4;pointer-events:none}\
-';
-  /* قلب الصفحة + الصفحة الداكنة (يُضافان في ملف الـ CSS المرفق) */
-  var stl = document.createElement('style'); stl.id = 'rmc-css'; stl.textContent = css; document.head.appendChild(stl);
+  /* الأنماط انتقلت إلى rafiq-mushaf.css (ملف واحد لكل طبقات المصحف) */
 
   function build() {
     if ($('rmcSheet')) return;

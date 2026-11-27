@@ -191,22 +191,30 @@
     } catch (e) { return false; }
   }
   var lastPlaybackTime = -1;
+  /* يُصفَّر عند أي بداية جديدة (تشغيل/تنقّل/سورة جديدة/نهاية) حتى لا يظل المؤشر
+     عالقًا عند أعلى زمن بلغته سورة سابقة (كان يمنع قلب الصفحات حتى يتجاوز الزمنَ القديم). */
+  function resetFollow() { lastPlaybackTime = -1; lastSynced = null; }
   function followPage(surah, ayah) {
     if (!audible()) return;              // لا نغيّر صفحة المصحف إلا وقارئ يعمل بصوت مسموع
-    /* لا نقلب الصفحة إلا إذا كان الصوت يتقدّم فعلًا (لا عنصر معلّق يبدو شغالًا بلا صوت) */
     var t = Number(ap.currentTime) || 0;
+    /* رجوع الزمن للخلف = تنقّل أو سورة جديدة: ابدأ المتابعة من جديد */
+    if (t < lastPlaybackTime - 0.3) { lastPlaybackTime = -1; lastSynced = null; }
+    /* لا نقلب الصفحة إلا إذا كان الصوت يتقدّم فعلًا (لا عنصر معلّق يبدو شغالًا بلا صوت) */
     if (!(t > lastPlaybackTime + 0.05)) return;
     lastPlaybackTime = t;
     if (!ensurePages()) return;
+    /* الصفحة تُشتق من (سورة، آية) مباشرة من خريطة الصفحات؛ فلا حاجة لشرط "صاحب الصفحة"
+       الذي كان يمنع قلب 399 آية في الصفحات المشتركة بين سورتين (مثل نهاية النساء ص106). */
     var page = pageOf.get(surah * 1000 + ayah), cur = readCurrentPage();
     if (!page || !cur) return;
-    /* مزامنة حقيقية: الصفحة تتبع موضع الآية في التلاوة، وتُقلب مرة واحدة عند تغيّر الصفحة */
-    var owner = 0; try { owner = PAGE_TO_SURAH[page] || 0; } catch (e) {}
-    if (page !== cur && owner === surah && typeof window.loadPage === "function") {
-      lastSynced = page;
+    /* تُقلب الصفحة مرة واحدة عند تغيّر صفحة التلاوة (أو عند التشغيل/التنقّل)،
+       فإن قلّبت أنت صفحة يدويًا لا تُسحب منك حتى تنتقل التلاوة لصفحة جديدة. */
+    var changed = page !== lastSynced;
+    lastSynced = page;
+    if (changed && page !== cur && typeof window.loadPage === "function") {
       window.__rfqAudioPageSync = true;
       try { window.loadPage(page); } finally { window.__rfqAudioPageSync = false; }
-    } else lastSynced = page;
+    }
   }
   function sync(reason) {
     try {
@@ -256,15 +264,16 @@
       if (wired) return; ap = document.getElementById("quranAudioPlayer"); if (!ap) return; wired = true; pinVoice(ap);
       var pa = document.getElementById("pageReadAudio"); if (pa) pinVoice(pa);
       ap.addEventListener("timeupdate", function () { sync("tick"); });
-      ap.addEventListener("play", function () { lastSynced = null; sync("play"); });
-      ap.addEventListener("seeked", function () { lastSynced = null; if (!ap.paused) sync("seek"); });
+      ap.addEventListener("play", function () { resetFollow(); sync("play"); });
+      ap.addEventListener("seeked", function () { resetFollow(); if (!ap.paused) sync("seek"); });
       ap.addEventListener("loadedmetadata", function () {
-        lastSynced = null;
+        resetFollow();
         loadTimings(readerId(), parseInt(ap.getAttribute("data-surah") || "", 10)).then(function () {
           if (ap && !ap.paused) sync("metadata");
         });
       });
-      ap.addEventListener("ended", function () { lastSynced = null; });
+      ap.addEventListener("ended", function () { resetFollow(); });
+      ap.addEventListener("emptied", function () { resetFollow(); });
     } catch (e) {}
   }
   window.__rmAudioSync = {
@@ -280,7 +289,15 @@
     _timingsMatchAudio: timingsMatchAudio,
     sync: function () { sync("debug"); },
     mapped: function (surah, frac) { if (!ensureWeights() || !ensurePages()) return null; var pos = mappedPosition(surah, frac); return pos ? { ayah: pos.ayah, total: pos.total, page: pageOf.get(surah * 1000 + pos.ayah), precision: pos.precision } : null; },
-    loadTimings: loadTimings
+    loadTimings: loadTimings,
+    /* حدود نطاق آيات بالثواني من توقيتات دقيقة فقط (للتكرار). يرجع null إن لم تتوفر توقيتات تطابق الصوت. */
+    ayahBounds: function (surah, from, to) {
+      var d = timingCache[readerId() + ":" + surah];
+      if (!d || !d.ayahs || !ap || !timingsMatchAudio(d, ap.duration)) return null;
+      var a = null, b = null;
+      d.ayahs.forEach(function (r) { if (r.ayah === from) a = r; if (r.ayah === to) b = r; });
+      return (a && b && b.end > a.start) ? { start: a.start, end: b.end, total: d.expected } : null;
+    }
   };
   wire(); if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", wire);
   window.addEventListener("online", function () {

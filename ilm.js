@@ -27,7 +27,7 @@
   }
   function words(t) { return (t || '').trim().split(/\s+/).filter(Boolean).length; }
   function mins(w) { return Math.max(1, Math.round(w / 180)); }
-  function arNum(n) { return Number(n).toLocaleString('ar-EG'); }
+  function arNum(n) { return Number(n).toLocaleString('en-US'); }
 
   function blocksHTML(blocks) {
     return (blocks || []).map(function (b) {

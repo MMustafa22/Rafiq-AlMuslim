@@ -26,83 +26,7 @@
     try { localStorage.setItem(K_COLLAPSED, v ? '1' : '0'); } catch (e) {}
   }
 
-  var css = '' +
-/* الهيدر القابل للطي */
-'#audioPlayerBox{overflow:hidden}' +
-'#audioPlayerBox .mp-unified{transition:max-height .45s cubic-bezier(.4,0,.2,1),opacity .35s ease}' +
-'#audioPlayerBox.rm-collapsed{padding-top:0!important;padding-bottom:0!important}' +
-'#audioPlayerBox.rm-collapsed .mp-unified{max-height:0;opacity:0;pointer-events:none;margin:0}' +
-'#audioPlayerBox.rm-collapsed .reciter-notice{display:none!important}' +
-'.rm-header-bar{display:flex;align-items:center;gap:8px;padding:7px 12px;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;background:rgba(212,175,55,.08);border-bottom:1px solid rgba(212,175,55,.25)}' +
-'body:not(.dark-mode) .rm-header-bar{background:rgba(160,120,32,.08);border-bottom-color:rgba(160,120,32,.22)}' +
-'.rm-header-bar .rm-bar-title{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:800;font-size:.92rem;color:var(--gold);direction:rtl}' +
-'body:not(.dark-mode) .rm-header-bar .rm-bar-title{color:#6b4a10}' +
-'.rm-header-bar .rm-bar-arrow{flex:0 0 auto;width:28px;height:28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:rgba(212,175,55,.15);border:1px solid rgba(212,175,55,.4);color:var(--gold);font-size:.85rem;transition:transform .35s ease}' +
-'body:not(.dark-mode) .rm-header-bar .rm-bar-arrow{background:rgba(160,120,32,.12);border-color:rgba(160,120,32,.4);color:#7a5010}' +
-'#audioPlayerBox.rm-collapsed .rm-bar-arrow{transform:rotate(180deg)}' +
-'.rm-header-bar.rm-hidden{display:none}' +
-/* أول 3 ثوانٍ: الهيدر الكامل ظاهر ولا يظهر الشريط الصغير */
-'#audioPlayerBox.rm-intro .rm-header-bar{display:none}' +
-/* العنوان يُعرض في الشريط العلوي فقط: نمنع تكراره في صف الأدوات (نفس النص مرتين) */
-'#audioPlayerBox:not(.rm-intro) .current-surah-name{display:none!important}' +
-
-/* --- إصلاح تباين الوضع النهاري (النص الفاتح على خلفية فاتحة) --- */
-'body:not(.dark-mode) .mp-progress-row{color:#5a4000!important}' +
-'body:not(.dark-mode) .mp-time{color:#5a4000!important}' +
-'body:not(.dark-mode) .audio-playback-status{color:#6b4a10;background:rgba(160,120,32,.08);border-color:rgba(160,120,32,.25)}' +
-'body:not(.dark-mode) .reader-label{color:#6b4a10!important}' +
-'body:not(.dark-mode) .current-surah-name{color:#6b3d00!important}' +
-'body:not(.dark-mode) #curatedAudioMenus .curated-audio-label{color:#6b4a10!important}' +
-'body:not(.dark-mode) .reciter-coverage{color:#7a5a10!important}' +
-'body:not(.dark-mode) .reciter-coverage.partial{color:#8a6a10!important}' +
-'body:not(.dark-mode) .rmo-cnt{color:#5a4000!important}' +
-'body:not(.dark-mode) #rmoMsg{color:#5a4000!important}' +
-'body:not(.dark-mode) .mp-vol-value{color:#5a4000!important}' +
-'body:not(.dark-mode) .tafseer-source{color:rgba(100,60,0,.75)!important}' +
-
-/* --- الوضع الأفقي على الموبايل --- */
-'@media (max-height:520px) and (orientation:landscape){' +
-'  html body .quran-reading-split{grid-template-columns:minmax(0,1fr)!important;max-width:100%!important;padding:0!important;gap:0!important}' +
-'  html body .quran-translation-panel{display:none!important}' +
-'  html body #readerView{padding-bottom:0!important}' +
-'  html body #readerView .page-image-area{min-height:0!important;background:var(--rm-paper,#fffdf5)!important}' +
-'  html body #readerView .img-wrapper{min-height:0!important;background:var(--rm-paper,#fffdf5)!important;border-bottom:0!important;box-shadow:none!important;display:flex;align-items:center;justify-content:center}' +
-'  html body #readerView .img-wrapper .mushaf-page-img,html body #readerView .img-wrapper.rmz-on .mushaf-page-img{width:100%!important;height:auto!important;max-height:none!important;max-width:100vw!important;object-fit:contain!important;object-position:center!important;margin:0 auto!important}' +
-'  html body #readerView.rm-land-hide-img .mushaf-page-img{height:calc(100dvh - 52px)!important}' +
-/* الهيدر المنكمش في الأفقي: شريط رفيع واحد فقط */
-'  html body #audioPlayerBox{position:relative!important;padding:0!important;border-bottom:1px solid rgba(160,120,32,.25)}' +
-'  html body #audioPlayerBox.rm-collapsed{border-bottom:1px solid rgba(160,120,32,.2)}' +
-'  html body #audioPlayerBox.rm-intro .mp-unified{max-height:46dvh!important;opacity:1!important;pointer-events:auto!important;overflow:auto}' +
-'  html body #audioPlayerBox:not(.rm-intro):not(.rm-collapsed) .mp-unified{max-height:44dvh!important;opacity:1!important;pointer-events:auto!important;overflow:auto}' +
-'  html body .rm-header-bar{padding:4px 10px}' +
-'  html body .rm-header-bar .rm-bar-title{font-size:.85rem}' +
-/* أزرار التنقل الجانبية: عمود مضغوط على حافة الشاشة بجانب الصفحة */
-'  html body div#navBar.nav-bar{position:fixed!important;top:50%!important;right:0!important;bottom:auto!important;left:auto!important;transform:translateY(-50%)!important;display:flex!important;flex-direction:column!important;gap:6px;padding:6px 4px!important;width:auto!important;max-width:none!important;min-width:0!important;grid-template-columns:none!important;background:rgba(250,246,235,.96)!important;border:1px solid rgba(160,120,32,.35)!important;border-right:0!important;border-radius:12px 0 0 12px!important;box-shadow:-3px 3px 14px rgba(75,55,20,.18)!important;z-index:900;height:auto!important;min-height:0!important;box-sizing:border-box}' +
-'  html body #navBar .nav-btn{flex:none!important;grid-column:auto!important;min-height:44px!important;min-width:46px!important;width:46px!important;max-width:none!important;padding:6px 4px!important;font-size:.68rem!important;border-radius:10px!important;white-space:normal!important;line-height:1.25!important;writing-mode:vertical-rl!important;text-orientation:mixed!important}' +
-'  html body #navBar .nav-jump-wrap{width:auto!important;padding:2px!important;border-radius:10px!important}' +
-'  html body #navBar .nav-jump-input{width:44px!important;max-width:none!important;height:38px!important;font-size:.9rem!important;padding:2px!important}' +
-'  html body #readerView .img-wrapper.rmz-on{overflow:visible!important;justify-content:center!important}' +
-'  html body #readerView.rm-land-side .page-image-area,html body #readerView.rm-land-side .img-wrapper{padding-right:0!important}' +
-'  html body #readerView.rm-land-side .mushaf-page-img{max-width:calc(100vw - 62px)!important}' +
-'  html body .tafseer-btn-wrap{padding:2px 10px 4px;gap:8px}' +
-'  html body .tafseer-btn{padding:8px 8px;font-size:.8rem}' +
-/* الغمر في الأفقي: لا هيدر ولا فوتر ولا أزرار — الصفحة بالحجم الكبير */
-'  html body #readerView.rm-landscape-big #audioPlayerBox{display:none!important}' +
-'  html body #readerView.rm-landscape-big #navBar{display:none!important}' +
-'  html body #readerView.rm-landscape-big .tafseer-btn-wrap{display:none!important}' +
-'  html body #readerView.rm-landscape-big .page-image-area{position:fixed;inset:0;z-index:2500;background:var(--rm-paper,#fffdf5)!important;display:flex;align-items:center;justify-content:center}' +
-'  html body #readerView.rm-landscape-big .img-wrapper{width:100vw!important;height:100dvh!important;display:flex!important;align-items:center!important;justify-content:center!important;min-height:0!important;background:var(--rm-paper,#fffdf5)!important}' +
-'  html body #readerView.rm-landscape-big .mushaf-page-img{width:100vw!important;height:auto!important;max-height:100dvh!important;max-width:100vw!important;object-fit:contain!important;object-position:center!important}' +
-'}' +
-/* الغمر على أي شاشة قصيرة */
-'@media (max-height:520px) and (orientation:landscape){' +
-'  html body #readerView.rm-landscape-big .page-image-area{position:fixed;inset:0;z-index:2500;background:var(--rm-paper,#fffdf5)!important;display:flex;align-items:center;justify-content:center}' +
-'  html body #readerView.rm-landscape-big .img-wrapper{width:100vw!important;height:100dvh!important;display:flex!important;align-items:center!important;justify-content:center!important}' +
-'  html body #readerView.rm-landscape-big .mushaf-page-img{width:100vw!important;height:auto!important;max-height:100dvh!important;object-fit:contain!important}' +
-'}';
-
-  var stl = document.createElement('style'); stl.id = 'rm-v13-css'; stl.textContent = css;
-  document.head.appendChild(stl);
+  /* الأنماط انتقلت إلى rafiq-mushaf.css (ملف واحد لكل طبقات المصحف) */
 
   /* بناء شريط اسم السورة مع السهم */
   function buildBar(box) {
@@ -248,7 +172,7 @@
     if (!isLandscapePhone()) return;
     var a = $('pageImageArea');
     if (!a || !a.contains(e.target)) return;
-    if (e.touches.length === 1) tapStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    if (e.touches.length === 1) tapStart = { x: e.touches[0].clientX, y: e.touches[0].clientY, t: Date.now(), fling: (Date.now() - (window.__rmLastScrollAt || 0)) < 160 };
   }, { capture: true, passive: true });
   window.addEventListener('touchend', function (e) {
     if (!isLandscapePhone()) return;
@@ -256,9 +180,10 @@
     if (!a || !a.contains(e.target)) return;
     var rv = $('readerView'); if (!rv || rv.style.display === 'none') return;
     var ct = e.changedTouches[0], now = Date.now();
-    if (tapStart && Math.hypot(ct.clientX - tapStart.x, ct.clientY - tapStart.y) > 24) { tapStart = null; lastTap = 0; return; }
+    /* ليست ضغطة: حركة، أو لمسة طويلة، أو لمسة أوقفت تمريرًا جاريًا (شائعة في التمرير الأفقي الطويل) */
+    if (tapStart && (Math.hypot(ct.clientX - tapStart.x, ct.clientY - tapStart.y) > 24 || now - tapStart.t > 350 || tapStart.fling)) { tapStart = null; lastTap = 0; return; }
     tapStart = null;
-    var near = lastTapXY && Math.hypot(ct.clientX - lastTapXY.x, ct.clientY - lastTapXY.y) < 120;
+    var near = lastTapXY && Math.hypot(ct.clientX - lastTapXY.x, ct.clientY - lastTapXY.y) < 70;
     if (now - lastTap < 350 && near) {
       e.stopPropagation(); e.preventDefault();
       lastTap = 0; suppressDbl = Date.now() + 700;

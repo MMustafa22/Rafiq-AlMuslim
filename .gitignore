@@ -1,2 +1,10 @@
 # لقطات المعاينة المؤقتة — لا تُرفع مع المشروع
 shots/
+
+# بيانات شخصية (نقاط/آخر سورة/مفضلة/إعدادات) — لا تُرفع أبدًا
+rafiq-backup-*.json
+rafiq-settings-*.json
+rafiq-challenge-*.json
+
+# مخرجات فحص الروابط
+reports/

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-<head><meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: blob: 'unsafe-inline' 'unsafe-eval'; object-src 'none'; base-uri 'self'; form-action 'self'">
-<meta charset="utf-8">
+<head><meta name="referrer" content="strict-origin-when-cross-origin"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; media-src 'self' blob: https:; font-src 'self' data:; connect-src 'self' https:; frame-src 'self'; worker-src 'self' blob:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta charset="utf-8"><script src="./rafiq-storage-shim.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>المسابقة الشهرية · رفيق المسلم</title>
+<title>تحدّي رفيق المسلم</title>
 <meta name="theme-color" content="#080e1a">
 <link rel="manifest" href="./manifest.json">
 <style>
@@ -17,9 +17,9 @@
 </head>
 <body>
 <div class="box">
-  <h1>انتقلت المسابقة إلى صفحة جديدة</h1>
-  <p>أصبح الترتيب يعتمد على مجموع درجاتك اليومية من التطبيق — بلا أسئلة — والتسجيل بالبريد ورقم الواتساب مع خصوصية كاملة لبياناتك.</p>
-  <a id="go" href="contest.html">الانتقال إلى المسابقة ←</a>
+  <h1>أصبحت المسابقة تحدّيًا شخصيًا</h1>
+  <p>تتبّع نقاطك الشهرية وقارنها بنفسك، بلا حسابات ولا بريد ولا ترتيب مع الآخرين.</p>
+  <a id="go" href="contest.html">الانتقال إلى التحدّي ←</a>
 </div>
 <script>
   // إعادة توجيه فورية مع الحفاظ على الرابط القديم يعمل في كل الحالات.

@@ -316,7 +316,7 @@
       }
       if (kind === "cattle" && n >= 120) {
         var groups = Math.floor((n - 120) / 30);
-        due = groups > 0 ? "٣ مسنّة + " + groups + " تبيع" : "٣ مسنّة (أو ٤ تبيع)";
+        due = groups > 0 ? "3 مسنّة + " + groups + " تبيع" : "3 مسنّة (أو 4 تبيع)";
       }
     } else {
       if (n >= 400) due = "4 شياه +" + Math.ceil((n - 400) / 100) + " لكل مئة زائدة";

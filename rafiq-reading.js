@@ -349,7 +349,7 @@
       + '  <div class="rp-head">'
       + '    <span class="rp-title">📚 وردك اليومي من الكتب</span>'
       + '    <span class="rp-total">' + (earned ? '+' + earned + ' نقطة اليوم' : 'لم تُسجّل وردًا اليوم') + '</span>'
-      + '    <a class="rp-contest" href="contest.html">🏆 المسابقة</a>'
+      + '    <a class="rp-contest" href="contest.html">🏆 التحدّي</a>'
       + '  </div>'
       + '  <div class="rp-grid">' + BOOKS.map(cardHtml).join('') + khatmaHtml() + '</div>'
       + '</section>';

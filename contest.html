@@ -1,16 +1,14 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl" data-mode="dark">
-<head><meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: blob: 'unsafe-inline' 'unsafe-eval'; object-src 'none'; base-uri 'self'; form-action 'self'">
-<meta charset="utf-8">
+<head><meta name="referrer" content="strict-origin-when-cross-origin"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; media-src 'self' blob: https:; font-src 'self' data:; connect-src 'self' https:; frame-src 'self'; worker-src 'self' blob:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta charset="utf-8"><script src="./rafiq-storage-shim.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#080e1a">
-<title>مسابقة رفيق المسلم</title>
-<meta name="description" content="مسابقة رفيق المسلم: ترتيب شهري بالنقاط التي تجمعها من عبادتك اليومية. التسجيل بالبريد ورقم الواتساب، وبياناتك خاصة بك وحدك.">
+<title>تحدّي رفيق المسلم</title>
+<meta name="description" content="تحدّي رفيق المسلم: تتبّع نقاطك الشهرية من عبادتك اليومية وقارنها بنفسك. بلا حسابات ولا ترتيب مع الآخرين، وكل بياناتك على جهازك فقط.">
 <link rel="manifest" href="./manifest.json">
 <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./rafiq-fonts.css?v=1">
 <script>
 (function(){
   var m='dark';
@@ -179,8 +177,41 @@ html[data-mode="light"] .mchip.on{color:#fff}
 #toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,18px);z-index:200;background:var(--emerald2);color:#04150f;padding:9px 18px;border-radius:999px;font-size:.78rem;font-weight:900;opacity:0;pointer-events:none;transition:.3s;box-shadow:0 16px 40px -20px #000;max-width:92vw;text-align:center}
 #toast.show{opacity:1;transform:translate(-50%,0)}
 .hidden{display:none!important}
+
+/* ===== التحدّي الشخصي ===== */
+.kpis.k3{grid-template-columns:repeat(3,1fr)}
+@media(max-width:520px){.kpis.k3{grid-template-columns:repeat(3,1fr)}.kpis.k3 .kpi b{font-size:1.05rem}}
+.goal-bar{height:14px;border-radius:999px;background:var(--bg2);border:1px solid var(--line-soft);overflow:hidden;margin:10px 0 6px}
+.goal-bar i{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,var(--emerald2),var(--gold));transition:width .7s cubic-bezier(.2,.8,.2,1)}
+.goal-line{display:flex;justify-content:space-between;gap:8px;font-size:.74rem;color:var(--soft);font-weight:700}
+.goal-line b{color:var(--gold)}
+.goal-edit{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:10px}
+.goal-edit input{direction:ltr;text-align:center;font-weight:800}
+.trend{display:inline-flex;align-items:center;gap:5px;margin-top:8px;padding:4px 11px;border-radius:999px;font-size:.74rem;font-weight:800;border:1px solid var(--line-soft);background:var(--bg2);color:var(--soft)}
+.trend.up{color:var(--emerald);border-color:rgba(52,211,153,.4);background:rgba(52,211,153,.1)}
+.trend.down{color:#f59e0b;border-color:rgba(245,158,11,.4);background:rgba(245,158,11,.1)}
+.cal{display:grid;grid-template-columns:repeat(10,1fr);gap:5px;margin-top:8px}
+@media(max-width:420px){.cal{grid-template-columns:repeat(6,1fr)}}
+.cal .d{aspect-ratio:1;border-radius:9px;display:grid;place-items:center;font-size:.66rem;font-weight:800;color:var(--soft);background:var(--bg2);border:1px solid var(--line-soft);position:relative}
+.cal .d.l1{background:rgba(52,211,153,.14);color:var(--soft)}
+.cal .d.l2{background:rgba(52,211,153,.30);color:var(--ink)}
+.cal .d.l3{background:rgba(52,211,153,.55);color:#04150f}
+.cal .d.l4{background:linear-gradient(135deg,var(--emerald2),var(--gold));color:#1b1403}
+.cal .d.today{outline:2px solid var(--gold);outline-offset:1px}
+.cal .d.future{color:var(--mute);border-style:dashed;background:transparent}
+.legend{display:flex;align-items:center;gap:5px;font-size:.62rem;color:var(--mute);margin-top:8px;justify-content:flex-end}
+.legend i{width:13px;height:13px;border-radius:4px;display:inline-block;border:1px solid var(--line-soft)}
+.bars{display:flex;flex-direction:column;gap:9px;margin-top:6px}
+.bar-row{display:grid;grid-template-columns:104px 1fr 52px;align-items:center;gap:8px;font-size:.74rem;color:var(--soft)}
+.bar-row .tr{height:16px;border-radius:999px;background:var(--bg2);border:1px solid var(--line-soft);overflow:hidden}
+.bar-row .tr i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,rgba(231,196,106,.55),var(--gold));width:0;transition:width .7s}
+.bar-row.cur .tr i{background:linear-gradient(90deg,var(--emerald2),var(--emerald))}
+.bar-row.cur{color:var(--ink);font-weight:800}
+.bar-row b{text-align:left;direction:ltr;color:var(--gold);font-weight:900}
+.empty{text-align:center;color:var(--mute);font-size:.8rem;padding:14px 8px}
+.legacy{border-color:rgba(245,158,11,.45)!important}
 </style>
-<script src="./rafiq-3d.js"></script><script src="./rafiq-daily-notifications.js"></script>
+<script src="./rafiq-3d.js"></script><script src="./rafiq-daily-notifications.js"></script><script src="./contest-points.js"></script>
 </head>
 <body>
 <header class="top">
@@ -190,129 +221,79 @@ html[data-mode="light"] .mchip.on{color:#fff}
   </button>
   <div class="brand">
     <div class="logo">🏆</div>
-    <div><b>مسابقة رفيق المسلم</b><span>ترتيب شهري بالنقاط — بلا أسئلة</span></div>
+    <div><b>تحدّي رفيق المسلم</b><span>تحدّيك مع نفسك — بلا حسابات</span></div>
   </div>
-  <button class="hbtn" id="themeBtn" onclick="toggleTheme()" aria-label="تبديل الوضع">
-    <span id="themeIco">☀️</span>
-  </button>
+  <button class="hbtn" id="themeBtn" onclick="toggleTheme()" aria-label="تبديل الوضع"><span id="themeIco">☀️</span></button>
 </header>
 
-<div class="wrap">
+<div class="wrap" role="main">
   <section class="hero">
     <div class="orn">✦ ❁ ✦</div>
-    <h1>مسابقتك مع نفسك… ومع إخوانك</h1>
-    <p>لا أسئلة ولا اختبارات. كل ما تسجّله في رفيق المسلم من صلوات وقرآن وأذكار وسنن وورد كتب يُترجم تلقائيًا إلى نقاط، ويظهر في ترتيب الشهر.</p>
+    <h1>تحدّيك مع نفسك</h1>
+    <p>لا حسابات ولا ترتيب مع الآخرين. كل ما تسجّله في رفيق المسلم من صلوات وقرآن وأذكار وسنن وورد كتب يتحوّل تلقائيًا إلى نقاط، وتقارن بها نفسك: شهرك بالشهر الماضي، ويومك بأيامك.</p>
     <div class="pill">🗓️ <span id="hijriPill">…</span></div>
   </section>
 
-  <!-- الدخول والتسجيل -->
-  <section class="card" id="authView">
-    <h2>🔐 الدخول إلى المسابقة</h2>
-    <div class="sub">التسجيل بالبريد الإلكتروني ورقم الواتساب. <b>بريدك ورقمك لا يظهران لأي متسابق</b> — يراهما صاحب الحساب فقط، والترتيب يعرض الاسم والنقاط.</div>
-    <div class="tabs">
-      <button type="button" id="tabLogin" class="on" onclick="setTab('login')">تسجيل الدخول</button>
-      <button type="button" id="tabReg" onclick="setTab('reg')">حساب جديد</button>
-    </div>
-
-    <div id="regFields" class="hidden">
-      <label for="rName">الاسم الذي سيظهر في الترتيب</label>
-      <input id="rName" maxlength="40" autocomplete="name" placeholder="مثال: أحمد محمد حسن">
-      <label for="rEmail">البريد الإلكتروني</label>
-      <input id="rEmail" type="email" dir="ltr" autocomplete="email" placeholder="name@example.com">
-      <label for="rPhone">رقم الواتساب</label>
-      <div class="phone-row">
-        <select id="rCc" aria-label="مفتاح الدولة">
-          <option value="20" selected>مصر +20</option>
-          <option value="966">السعودية +966</option>
-          <option value="971">الإمارات +971</option>
-          <option value="965">الكويت +965</option>
-          <option value="974">قطر +974</option>
-          <option value="973">البحرين +973</option>
-          <option value="968">عمان +968</option>
-          <option value="962">الأردن +962</option>
-          <option value="970">فلسطين +970</option>
-          <option value="961">لبنان +961</option>
-          <option value="963">سوريا +963</option>
-          <option value="964">العراق +964</option>
-          <option value="212">المغرب +212</option>
-          <option value="216">تونس +216</option>
-          <option value="213">الجزائر +213</option>
-          <option value="218">ليبيا +218</option>
-          <option value="249">السودان +249</option>
-          <option value="967">اليمن +967</option>
-          <option value="222">موريتانيا +222</option>
-          <option value="252">الصومال +252</option>
-          <option value="90">تركيا +90</option>
-          <option value="92">باكستان +92</option>
-          <option value="62">إندونيسيا +62</option>
-          <option value="60">ماليزيا +60</option>
-          <option value="880">بنغلاديش +880</option>
-          <option value="44">بريطانيا +44</option>
-          <option value="1">أمريكا/كندا +1</option>
-          <option value="49">ألمانيا +49</option>
-          <option value="33">فرنسا +33</option>
-        </select>
-        <input id="rPhone" type="tel" inputmode="numeric" dir="ltr" maxlength="13" autocomplete="tel-national" placeholder="1012345678">
-      </div>
-      <label for="rPw">كلمة المرور (8 أحرف على الأقل)</label>
-      <input id="rPw" type="password" dir="ltr" autocomplete="new-password" placeholder="••••••••">
-      <label for="rPw2">تأكيد كلمة المرور</label>
-      <input id="rPw2" type="password" dir="ltr" autocomplete="new-password" placeholder="••••••••">
-    </div>
-
-    <div id="loginFields">
-      <label for="lEmail">البريد الإلكتروني</label>
-      <input id="lEmail" type="email" dir="ltr" autocomplete="email" placeholder="name@example.com">
-      <label for="lPw">كلمة المرور</label>
-      <input id="lPw" type="password" dir="ltr" autocomplete="current-password" placeholder="••••••••">
-    </div>
-
-    <div class="msg" id="authMsg"></div>
-    <button class="btn primary" id="authBtn" style="margin-top:14px" onclick="submitAuth()">تسجيل الدخول</button>
-    <div class="note">🔒 كلمة المرور تُخزَّن مشفّرة (PBKDF2) على جهازك، وبيانات حسابك (البريد والواتساب) لا تُعرض في لوحة الترتيب لأي أحد.</div>
+  <!-- بيانات قديمة (حساب المسابقة السابقة) -->
+  <section class="card legacy hidden" id="legacyCard">
+    <h2>🧹 بيانات حساب قديمة على جهازك</h2>
+    <div class="sub">كانت المسابقة تحفظ على هذا الجهاز بريدًا ورقم واتساب وكلمة مرور مشفّرة. لم نعد نحتاجها (التحدّي أصبح شخصيًا)، ويمكنك حذفها الآن. نقاطك لن تتأثر لأنها تُقرأ من سجل أيامك.</div>
+    <button class="btn danger" onclick="purgeLegacy()">🗑️ حذف بيانات الحساب القديم</button>
   </section>
 
-  <!-- لوحة المتسابق -->
-  <section class="card hidden" id="meView">
-    <div class="who">
-      <div class="avatar" id="meAvatar">؟</div>
-      <div style="flex:1;min-width:0">
-        <div class="nm" id="meName">—</div>
-        <div class="meta"><span class="badge">مشارك معتمد</span> <span id="meSince"></span></div>
-      </div>
-      <button class="btn mini soft" onclick="openAccount()">حسابي</button>
+  <!-- هدف الشهر -->
+  <section class="card" id="goalCard">
+    <h2>🎯 هدف الشهر <span id="goalMonth" style="font-size:.72rem;color:var(--mute);font-weight:600"></span></h2>
+    <div class="sub">حدّد هدفًا بالنقاط لهذا الشهر، وتابع كم بقي لك كل يوم.</div>
+    <div class="goal-bar" role="progressbar" aria-label="تقدّم هدف الشهر" aria-valuemin="0" aria-valuemax="100" id="goalBar"><i id="goalFill"></i></div>
+    <div class="goal-line"><span><b id="goalPts">0</b> من <b id="goalVal">0</b> نقطة</span><span id="goalPct">0%</span></div>
+    <div class="note" id="goalHint">—</div>
+    <div class="goal-edit">
+      <input id="goalInput" type="number" inputmode="numeric" min="100" max="100000" step="100" aria-label="هدف الشهر بالنقاط" placeholder="الهدف بالنقاط">
+      <button class="btn gold mini" onclick="saveGoal()">حفظ الهدف</button>
     </div>
-    <div class="kpis">
-      <div class="kpi"><b id="kRank">—</b><span>ترتيبك</span></div>
+  </section>
+
+  <!-- ملخص الشهر -->
+  <section class="card" id="sumCard">
+    <h2>📊 ملخصك <span id="boardMonth" style="font-size:.72rem;color:var(--mute);font-weight:600"></span></h2>
+    <div class="months" id="monthChips" role="tablist" aria-label="اختر الشهر"></div>
+    <div class="kpis k3">
       <div class="kpi"><b id="kPts">0</b><span>نقاط الشهر</span></div>
       <div class="kpi"><b id="kDays">0</b><span>أيام النشاط</span></div>
-      <div class="kpi"><b id="kGap">—</b><span>تفصلك عن الأول</span></div>
+      <div class="kpi"><b id="kStreak">0</b><span>سلسلة أيام متتالية</span></div>
+      <div class="kpi"><b id="kBest">0</b><span>أفضل يوم</span></div>
+      <div class="kpi"><b id="kAvg">0</b><span>متوسط اليوم النشط</span></div>
+      <div class="kpi"><b id="kCap">0</b><span>سقف اليوم</span></div>
     </div>
+    <div id="trend" class="trend hidden"></div>
     <div class="parts" id="meParts"></div>
     <div class="grid-actions">
-      <button class="btn primary" onclick="syncMe(true)">🔄 مزامنة درجاتي الآن</button>
-      <button class="btn soft" onclick="exportCard()">📤 تصدير بطاقتي</button>
+      <button class="btn primary" onclick="refresh(true)">🔄 تحديث نقاطي الآن</button>
+      <button class="btn soft" onclick="exportProgress()">📤 تصدير تقدّمي</button>
     </div>
-    <div class="note" id="syncNote">تُقرأ درجاتك من سجل رفيق المسلم على هذا الجهاز وتُحفظ في قاعدة بيانات المسابقة.</div>
+    <div class="note" id="syncNote">تُقرأ نقاطك من سجل رفيق المسلم على هذا الجهاز.</div>
   </section>
 
-  <!-- الترتيب -->
+  <!-- أيام الشهر -->
   <section class="card">
-    <h2>🏅 ترتيب الشهر <span id="boardMonth" style="font-size:.72rem;color:var(--mute);font-weight:600"></span></h2>
-    <div class="sub" id="boardSub">—</div>
-    <div class="months" id="monthChips"></div>
-    <div class="podium" id="podium"></div>
-    <div class="search">
-      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
-      <input id="q" type="search" placeholder="ابحث باسم متسابق…" oninput="renderRows()">
-    </div>
-    <div class="rows" id="rows"></div>
+    <h2>🗓️ أيام الشهر</h2>
+    <div class="sub">كلما كان اللون أقوى كانت نقاط اليوم أعلى.</div>
+    <div class="cal" id="cal"></div>
+    <div class="legend">أقل <i style="background:var(--bg2)"></i><i style="background:rgba(52,211,153,.14)"></i><i style="background:rgba(52,211,153,.30)"></i><i style="background:rgba(52,211,153,.55)"></i><i style="background:linear-gradient(135deg,var(--emerald2),var(--gold))"></i> أكثر</div>
+  </section>
+
+  <!-- مقارنة الشهور -->
+  <section class="card">
+    <h2>📈 شهورك السابقة</h2>
+    <div class="sub">قارن شهرك الحالي بآخر ستة شهور.</div>
+    <div class="bars" id="bars"></div>
   </section>
 
   <!-- كيف تُحسب -->
   <section class="card">
-    <h2>⚙️ كيف تُحسب درجاتك؟</h2>
-    <div class="sub">كل ما تسجّله في «الرفيق اليومي» يُجمع تلقائيًا في درجة اليوم، ثم تُرتَّب درجات الشهر:</div>
+    <h2>⚙️ كيف تُحسب نقاطك؟</h2>
+    <div class="sub">كل ما تسجّله في «الرفيق اليومي» يُجمع تلقائيًا في نقاط اليوم:</div>
     <div class="how">
       <div class="how-row"><span class="ic">🕌</span><span>الصلوات المفروضة وأذكار بعدها والسنن الرواتب</span><b>تلقائي</b></div>
       <div class="how-row"><span class="ic">📖</span><span>القرآن الكريم وورد الختمة اليومي</span><b>تلقائي</b></div>
@@ -322,396 +303,207 @@ html[data-mode="light"] .mchip.on{color:#fff}
       <div class="how-row"><span class="ic">🕌</span><span>السيرة النبوية <b style="color:var(--gold)">+25</b></span><b>ورد يومي</b></div>
       <div class="how-row"><span class="ic">📖</span><span>ورد الختمة اليومي <b style="color:var(--gold)">+50</b></span><b>ورد يومي</b></div>
     </div>
-    <div class="note">لا توجد أسئلة ولا إجابات تُدخل يدويًا: الترتيب مبني على عبادتك المسجَّلة فقط، ودرجة اليوم محدودة بسقف يومي يمنع التفاوت غير الواقعي.</div>
+    <div class="note">لا أسئلة ولا إجابات تُدخل يدويًا. نقاط اليوم محدودة بسقف يومي حتى تبقى المقارنة واقعية.</div>
   </section>
 
-  <!-- قاعدة البيانات -->
   <section class="card">
-    <h2>🗂️ قاعدة بيانات المسابقة</h2>
-    <div class="sub">كل متسابق له سجل باسمه ودرجاته وترتيبه في كل شهر. يمكنك حفظ نسخة من القاعدة أو استعادتها أو دمج بطاقة متسابق.</div>
-    <div class="db-stats" id="dbStats"></div>
-    <div class="grid-actions">
-      <button class="btn soft" onclick="exportDb()">💾 حفظ نسخة من القاعدة</button>
-      <button class="btn soft" onclick="document.getElementById('impFile').click()">📥 استيراد ملف</button>
-      <button class="btn soft" onclick="document.getElementById('cardFile').click()">📄 دمج بطاقة متسابق</button>
-      <button class="btn danger" onclick="deleteDemo()">🧹 حذف البيانات التجريبية</button>
-    </div>
-    <input type="file" id="impFile" accept=".json,application/json" class="hidden" onchange="importDb(this)">
-    <input type="file" id="cardFile" accept=".json,application/json" class="hidden" onchange="importCard(this)">
-    <div class="note">⚠️ نسخة القاعدة تحتوي بيانات التواصل (بريد وواتساب) لكل المشاركين — احفظها في مكان خاص بك ولا تشاركها. لوحة الترتيب نفسها لا تُظهرها أبدًا.</div>
-    <div class="note">ℹ️ هذه المسابقة تعمل محليًا على هذا الجهاز فقط (قاعدة بيانات المتصفح)، وترتيبها قائم على الثقة: كلمة المرور تمنع العبث العابر ولا تُعد حماية حقيقية، ولا تُقبل الدرجات إلا إذا كانت في حدود السقف اليومي.</div>
+    <h2>🔒 خصوصيتك</h2>
+    <div class="note" style="margin-top:0">لا يوجد تسجيل ولا بريد ولا رقم واتساب، ولا شيء يُرسل إلى أي سيرفر. نقاطك وهدفك محفوظان على هذا الجهاز فقط. «تصدير تقدّمي» ينزّل ملفًا خاصًا بك لتحتفظ به أو تشاركه إن أردت.</div>
   </section>
 </div>
-
-<!-- حسابي -->
-<div class="modal" id="accModal" onclick="if(event.target===this)closeAccount()">
-  <div class="modal-card" style="position:relative">
-    <button class="btn mini soft close-x" onclick="closeAccount()">✕</button>
-    <h3>🔐 حسابي</h3>
-    <div class="acc-row"><span class="lbl">الاسم في الترتيب</span><span class="val" id="accName" style="direction:rtl">—</span></div>
-    <div class="acc-row"><span class="lbl">البريد الإلكتروني</span><span class="val"><span id="accEmail">—</span><button class="eye" onclick="toggleSecret('email')" aria-label="إظهار البريد">👁</button></span></div>
-    <div class="acc-row"><span class="lbl">رقم الواتساب</span><span class="val"><span id="accPhone">—</span><button class="eye" onclick="toggleSecret('phone')" aria-label="إظهار الرقم">👁</button></span></div>
-    <div class="acc-row"><span class="lbl">تاريخ الانضمام</span><span class="val" id="accJoined" style="direction:rtl">—</span></div>
-    <div class="note">🔒 هذه البيانات لا تظهر لأي متسابق آخر — تُعرض لك وحدك على هذا الجهاز.</div>
-    <div class="grid-actions">
-      <button class="btn soft" onclick="renameMe()">✏️ تعديل الاسم</button>
-      <button class="btn soft" onclick="logoutMe()">🚪 تسجيل الخروج</button>
-    </div>
-    <button class="btn danger" style="margin-top:8px" onclick="deleteMe()">🗑️ حذف حسابي من المسابقة</button>
-  </div>
-</div>
-
-<div id="toast"></div>
-
-<script src="./contest-points.js"></script>
-<script src="./contest-db.js"></script>
+<div id="toast" role="status" aria-live="polite"></div>
+<script>function goToRafiqHome(){try{if(window.parent!==window){window.parent.postMessage({type:"rafiq-contest-home"},"*");return false}}catch(e){}try{if(document.referrer&&new URL(document.referrer).origin===location.origin&&history.length>1){history.back();return false}}catch(e){}location.href="index.html";return false}</script>
 <script>
 (function(){
   'use strict';
-  var $ = function(id){ return document.getElementById(id); };
-  var state = { tab: 'login', month: '', me: null, rows: [], revealed: false, searching: '' };
+  var P=window.RFQ_POINTS, GOAL_KEY='rfq_challenge_goal_v1';
+  var $=function(id){return document.getElementById(id)};
+  var AR=function(n){try{return Number(n).toLocaleString('en-US')}catch(e){return String(n)}};
+  var state={records:{},month:'',months:[],byMonth:{}};
 
-  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
-  function toast(msg){
-    var t=$('toast'); t.textContent=msg; t.classList.add('show');
-    clearTimeout(t._t); t._t=setTimeout(function(){ t.classList.remove('show'); }, 2200);
-  }
-  function msg(text, ok){
-    var m=$('authMsg'); m.className='msg '+(text?(ok?'ok':'err'):''); m.textContent=text||'';
-  }
-  function fmt(n){ return Number(n||0).toLocaleString('en-US'); }
-  function maskEmail(v){ var p=String(v||'').split('@'); return (p[0]||'').slice(0,2)+'•••@'+(p[1]||'—'); }
-  function maskPhone(m){
-    if(!m||!m.whatsapp) return '—';
-    var p=String(m.whatsapp);
-    return '+'+m.cc+' •••• '+(p.slice(-3));
-  }
-  function toggleTheme(){
-    var cur=document.documentElement.getAttribute('data-mode')==='light'?'light':'dark';
-    var next=cur==='dark'?'light':'dark';
-    document.documentElement.setAttribute('data-mode',next);
-    try{ localStorage.setItem('rm_theme',next); }catch(e){}
-    $('themeIco').textContent = next==='dark'?'☀️':'🌙';
-    document.querySelector('meta[name="theme-color"]').setAttribute('content', next==='dark'?'#080e1a':'#fbf7ef');
-  }
-  window.toggleTheme=toggleTheme;
-
-  /* ---------- الدخول ---------- */
-  window.setTab=function(tab){
-    state.tab=tab;
-    $('tabLogin').classList.toggle('on', tab==='login');
-    $('tabReg').classList.toggle('on', tab==='reg');
-    $('regFields').classList.toggle('hidden', tab!=='reg');
-    $('loginFields').classList.toggle('hidden', tab==='reg');
-    $('authBtn').textContent = tab==='reg' ? 'إنشاء الحساب والمشاركة' : 'تسجيل الدخول';
-    msg('');
+  /* ---------- مظهر ---------- */
+  window.toggleTheme=function(){
+    var m=document.documentElement.getAttribute('data-mode')==='light'?'dark':'light';
+    document.documentElement.setAttribute('data-mode',m);
+    try{localStorage.setItem('rm_theme',m)}catch(e){}
+    $('themeIco').textContent=m==='light'?'🌙':'☀️';
   };
+  $('themeIco').textContent=document.documentElement.getAttribute('data-mode')==='light'?'🌙':'☀️';
+  function toast(t){var el=$('toast');el.textContent=t;el.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(function(){el.classList.remove('show')},2400)}
 
-  window.submitAuth=function(){
-    var btn=$('authBtn');
-    msg('');
-    btn.disabled=true;
-    var work;
-    if(state.tab==='reg'){
-      if($('rPw').value !== $('rPw2').value){ btn.disabled=false; msg('كلمتا المرور غير متطابقتين.'); return; }
-      work = RFQ_CONTEST.register({
-        name: $('rName').value, email: $('rEmail').value,
-        cc: $('rCc').value, whatsapp: $('rPhone').value,
-        password: $('rPw').value
-      });
-    } else {
-      work = RFQ_CONTEST.login($('lEmail').value, $('lPw').value);
+  /* ---------- تاريخ هجري ---------- */
+  var fmt=null;
+  function hp(d){
+    try{
+      if(!fmt)fmt=new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{day:'numeric',month:'numeric',year:'numeric'});
+      var o={};fmt.formatToParts(d).forEach(function(p){o[p.type]=p.value});
+      return {y:parseInt(o.year,10),m:parseInt(o.month,10),d:parseInt(o.day,10)};
+    }catch(e){return {y:1448,m:1,d:1}}
+  }
+  function mkey(h){return h.y+'-'+String(h.m).padStart(2,'0')}
+  function iso(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+  /* خريطة: شهر هجري -> أيامه (تاريخ ميلادي + رقم اليوم الهجري) */
+  function buildCalendar(){
+    var map={},base=new Date();base.setHours(12,0,0,0);
+    for(var i=-500;i<=40;i++){
+      var d=new Date(base.getTime()+i*86400000),h=hp(d),k=mkey(h);
+      (map[k]=map[k]||[]).push({iso:iso(d),d:h.d});
     }
-    work.then(function(member){
-      $('rPw').value=$('rPw2').value=$('lPw').value='';
-      msg(state.tab==='reg' ? 'تم إنشاء الحساب بنجاح — أهلاً بك 🌟' : 'تم الدخول ✓', true);
-      return syncMe(false).then(function(){ return member; });
-    }).then(function(){
-      return RFQ_CONTEST.ready.then(refreshAll);
-    }).catch(function(err){
-      msg(err && err.message ? err.message : 'حدث خطأ، حاول مرة أخرى.');
-    }).then(function(){
-      btn.disabled=false;
-      setTimeout(function(){ msg(''); }, 3200);
-    });
+    return map;
+  }
+
+  /* ---------- هدف الشهر ---------- */
+  function goals(){try{return JSON.parse(localStorage.getItem(GOAL_KEY)||'{}')||{}}catch(e){return {}}}
+  function setGoal(k,v){var g=goals();g[k]=v;try{localStorage.setItem(GOAL_KEY,JSON.stringify(g))}catch(e){}}
+  function prevKey(k){var p=k.split('-'),y=+p[0],m=+p[1]-1;if(m<1){m=12;y--}return y+'-'+String(m).padStart(2,'0')}
+  function suggestGoal(k,sum){
+    var prev=sum[prevKey(k)];
+    var base=prev&&prev.pts>0?Math.ceil(prev.pts*1.1/100)*100:6000;
+    return Math.max(500,base);
+  }
+  window.saveGoal=function(){
+    var v=parseInt($('goalInput').value,10);
+    if(!isFinite(v)||v<100||v>100000){toast('اكتب هدفًا بين 100 و 100,000 نقطة');return}
+    setGoal(state.month,v);render();toast('تم حفظ الهدف ✔');
   };
 
-  document.addEventListener('keydown', function(e){
-    if(e.key!=='Enter') return;
-    if($('accModal').classList.contains('show')) return;
-    if($('authView').classList.contains('hidden')) return;
-    if(e.target && e.target.tagName==='INPUT') submitAuth();
-  });
-
-  /* ---------- مزامنة الدرجات ---------- */
-  function syncMe(notify){
-    return RFQ_CONTEST.me().then(function(m){
-      if(!m) return null;
-      return RFQ_POINTS.mySummary(state.month || RFQ_CONTEST.currentMonth()).then(function(s){
-        return RFQ_CONTEST.saveMonth(m.id, s.month, s.pts, s.days).then(function(){
-          if(notify) toast('تمت مزامنة '+fmt(s.pts)+' نقطة لهذا الشهر ✓');
-          return s;
-        });
-      });
-    }).catch(function(err){
-      if(notify) toast(err && err.message ? err.message : 'تعذّرت المزامنة');
-      return null;
-    });
+  /* ---------- حساب ---------- */
+  function summaries(){
+    var out={};
+    state.months.forEach(function(k){out[k]=P.summarize(state.records,k)});
+    return out;
   }
-  window.syncMe=syncMe;
-
-  /* ---------- العرض ---------- */
-  function refreshAll(){
-    return RFQ_CONTEST.me().then(function(m){
-      state.me = m;
-      $('authView').classList.toggle('hidden', !!m);
-      $('meView').classList.toggle('hidden', !m);
-      if(m){
-        $('meAvatar').textContent = (m.name||'؟').trim().charAt(0);
-        $('meName').textContent = m.name;
-        $('meSince').textContent = 'انضم في ' + RFQ_CONTEST.monthLabel(m.joined || RFQ_CONTEST.currentMonth());
-      }
-      return renderBoard();
-    }).then(refreshDbStats);
-  }
-
-  function renderChips(months){
-    var current = state.month;
-    $('monthChips').innerHTML = months.map(function(k){
-      return '<button class="mchip'+(k===current?' on':'')+'" onclick="selectMonth(\''+k+'\')">'+esc(RFQ_CONTEST.monthLabel(k))+'</button>';
-    }).join('') || '';
-  }
-  window.selectMonth=function(k){
-    state.month=k;
-    renderBoard();
-  };
-
-  function renderBoard(){
-    var month = state.month || RFQ_CONTEST.currentMonth();
-    state.month = month;
-    return RFQ_CONTEST.standings(month, { includeEmpty: true }).then(function(rows){
-      state.rows = rows;
-      var months = [];
-      for(var i=5;i>=0;i--) months.push(RFQ_CONTEST.shiftMonth(RFQ_CONTEST.currentMonth(), -i));
-      renderChips(months);
-      $('boardMonth').textContent = '· ' + RFQ_CONTEST.monthLabel(month);
-      var real = rows.filter(function(r){ return !r.demo; }).length;
-      $('boardSub').textContent = rows.length + ' متسابقًا (' + real + ' حسابًا مسجَّلًا) · تُحدَّث الدرجات عند فتح التطبيق أو المزامنة';
-      var top = rows.slice(0,3);
-      var medals=['🥇','🥈','🥉'];
-      $('podium').innerHTML = top.length ? top.map(function(r,i){
-        return '<div class="pod'+(i===0?' first':'')+'"><div class="medal">'+medals[i]+'</div><div class="nm">'+esc(r.name)+'</div><div class="pt">'+fmt(r.pts)+'</div><div class="dys">'+r.days+' يومًا</div></div>';
-      }).join('') : '<div class="empty" style="grid-column:1/-1">لا مشاركين في هذا الشهر بعد — كن أول المتسابقين.</div>';
-      renderRows();
-      if(state.me) renderMe(rows);
-    });
-  }
-
-  function renderRows(){
-    var q = ($('q').value||'').trim();
-    var rows = state.rows.filter(function(r){ return !q || r.name.indexOf(q)>-1; });
-    $('rows').innerHTML = rows.map(function(r){
-      var me = state.me && r.id===state.me.id;
-      return '<div class="rank-row'+(me?' me':'')+'">'
-        + '<span class="rk'+(r.rank<=3?' top':'')+'">'+r.rank+'</span>'
-        + '<span class="nm"><span class="txt">'+esc(r.name)+'</span>'+(me?'<span class="tag">أنا</span>':'')+(r.demo?'<span class="tag demo">تجريبي</span>':'')+'</span>'
-        + '<span class="pt">'+fmt(r.pts)+'</span>'
-        + '<span class="dys">'+r.days+' يومًا</span>'
-        + '</div>';
-    }).join('') || '<div class="empty">لا نتائج مطابقة.</div>';
-  }
-  window.renderRows=renderRows;
-
-  function renderMe(rows){
-    var mine = rows.filter(function(r){ return state.me && r.id===state.me.id; })[0];
-    if(!mine) return;
-    var leader = rows[0] || { pts: 0 };
-    $('kRank').textContent = '#' + mine.rank;
-    $('kPts').textContent = fmt(mine.pts);
-    $('kDays').textContent = mine.days;
-    $('kGap').textContent = (mine.rank===1 || !leader.pts) ? 'الأول 🎉' : fmt(Math.max(0, leader.pts - mine.pts));
-    RFQ_POINTS.mySummary(state.month).then(function(s){
-      $('meParts').innerHTML = [
-        ['الصلوات', s.parts.prayers], ['القرآن', s.parts.quran], ['الأذكار', s.parts.athkar],
-        ['السنن', s.parts.sunan], ['الكتب', s.parts.books]
-      ].map(function(x){ return '<div class="part"><b>'+fmt(x[1])+'</b><span>'+x[0]+'</span></div>'; }).join('');
-    });
-  }
-
-  function refreshDbStats(){
-    return RFQ_CONTEST.counts().then(function(c){
-      $('dbStats').innerHTML = [
-        ['حسابات مسجّلة', c.members], ['أعضاء تجريبيون', c.demo],
-        ['سجلات درجات', c.scores], ['شهور مسجّلة', c.months]
-      ].map(function(x){ return '<div class="db-stat"><b>'+fmt(x[1])+'</b><span>'+x[0]+'</span></div>'; }).join('');
-    }).catch(function(){});
-  }
-
-  /* ---------- الحساب ---------- */
-  window.openAccount=function(){
-    if(!state.me) return;
-    $('accName').textContent = state.me.name;
-    $('accJoined').textContent = RFQ_CONTEST.monthLabel(state.me.joined || RFQ_CONTEST.currentMonth());
-    state.revealed = false;
-    paintSecrets();
-    $('accModal').classList.add('show');
-  };
-  window.closeAccount=function(){ $('accModal').classList.remove('show'); };
-  function paintSecrets(){
-    var m = state.me;
-    if(!m) return;
-    $('accEmail').textContent = state.revealed ? (m.email||'—') : maskEmail(m.email);
-    $('accPhone').textContent = state.revealed ? ('+'+m.cc+' '+m.whatsapp) : maskPhone(m);
-  }
-  window.toggleSecret=function(){
-    state.revealed = !state.revealed;
-    paintSecrets();
-  };
-  window.logoutMe=function(){
-    RFQ_CONTEST.logout();
-    state.me=null;
-    closeAccount();
-    refreshAll();
-    toast('تم تسجيل الخروج');
-  };
-  window.renameMe=function(){
-    var v = prompt('الاسم الذي سيظهر في الترتيب:', state.me ? state.me.name : '');
-    if(v===null) return;
-    RFQ_CONTEST.updateName(v).then(function(m){
-      state.me=m; closeAccount(); refreshAll(); toast('تم تعديل الاسم ✓');
-    }).catch(function(e){ toast(e.message||'تعذّر التعديل'); });
-  };
-  window.deleteMe=function(){
-    if(!confirm('حذف حسابك من المسابقة نهائيًا مع درجاته؟ لا يمكن التراجع.')) return;
-    RFQ_CONTEST.deleteAccount().then(function(){
-      state.me=null; closeAccount(); refreshAll(); toast('تم حذف الحساب');
-    });
-  };
-
-  /* ---------- قاعدة البيانات ---------- */
-  /* S3: كل عمليات المشرف (تصدير/استيراد/حذف) تحتاج كلمة مرور مشرف تُطلب كل مرة */
-  var ADMIN_HASH_KEY = 'rfq_contest_admin_hash';
-  function sha256Hex(text){
-    var data = new TextEncoder().encode(String(text));
-    return crypto.subtle.digest('SHA-256', data).then(function(buf){
-      return [].map.call(new Uint8Array(buf), function(b){ return ('0'+b.toString(16)).slice(-2); }).join('');
-    });
-  }
-  function requireOrganizer(){
-    if(!window.crypto || !crypto.subtle || !window.TextEncoder){
-      alert('المتصفح لا يدعم التشفير المطلوب — افتح التطبيق عبر https أو localhost.');
-      return Promise.resolve(false);
+  function streak(){
+    var n=0,d=new Date();d.setHours(12,0,0,0);
+    var today=P.dayScore(state.records[iso(d)]);
+    if(today<=0)d=new Date(d.getTime()-86400000);   // اليوم لم يُسجَّل بعد: ابدأ من أمس
+    for(;;){
+      var s=P.dayScore(state.records[iso(d)]);
+      if(s>0){n++;d=new Date(d.getTime()-86400000)}else break;
+      if(n>3000)break;
     }
-    var stored = null;
-    try { stored = localStorage.getItem(ADMIN_HASH_KEY); } catch(e){}
-    if(!stored){
-      var p1 = prompt('أنشئ كلمة مرور للمشرف (6 أحرف على الأقل). تُطلب عند كل حفظ أو استيراد أو حذف:');
-      if(p1===null) return Promise.resolve(false);
-      if(String(p1).length < 6){ alert('كلمة المرور 6 أحرف على الأقل.'); return Promise.resolve(false); }
-      var p2 = prompt('أعد كتابة كلمة المرور:');
-      if(p2===null) return Promise.resolve(false);
-      if(p1!==p2){ alert('كلمتا المرور غير متطابقتين.'); return Promise.resolve(false); }
-      return sha256Hex(p1).then(function(h){
-        try { localStorage.setItem(ADMIN_HASH_KEY, h); } catch(e){}
-        return true;
-      });
-    }
-    var p = prompt('أدخل كلمة مرور المشرف:');
-    if(p===null) return Promise.resolve(false);
-    return sha256Hex(p).then(function(h){
-      if(h===stored) return true;
-      alert('كلمة المرور غير صحيحة.');
-      return false;
+    return n;
+  }
+
+  /* ---------- عرض ---------- */
+  function render(){
+    var sum=summaries(),cur=sum[state.month]||P.summarize(state.records,state.month);
+    $('boardMonth').textContent=cur.label;
+    $('goalMonth').textContent='— '+cur.label;
+    // chips
+    var chips=$('monthChips');chips.innerHTML='';
+    state.months.slice().reverse().forEach(function(k){
+      var b=document.createElement('button');b.type='button';b.className='mchip'+(k===state.month?' on':'');
+      b.setAttribute('role','tab');b.setAttribute('aria-selected',k===state.month?'true':'false');
+      b.textContent=P.monthLabel(k);b.onclick=function(){state.month=k;render()};chips.appendChild(b);
+    });
+    // kpis
+    $('kPts').textContent=AR(cur.pts);$('kDays').textContent=AR(cur.days);
+    $('kBest').textContent=AR(Math.round(cur.best));
+    $('kAvg').textContent=AR(cur.days?Math.round(cur.pts/cur.days):0);
+    $('kStreak').textContent=AR(streak());$('kCap').textContent=AR(P.cap);
+    // trend
+    var tr=$('trend'),prev=sum[prevKey(state.month)];
+    if(prev&&prev.pts>0){
+      var pct=Math.round((cur.pts-prev.pts)/prev.pts*100);
+      tr.className='trend '+(pct>=0?'up':'down');
+      tr.textContent=(pct>=0?'⬆ ':'⬇ ')+'مقارنة بـ'+prev.label+': '+(pct>=0?'+':'−')+AR(Math.abs(pct))+'٪';
+    }else{tr.className='trend hidden'}
+    // parts
+    var names={quran:'القرآن',prayers:'الصلوات',sunan:'السنن',athkar:'الأذكار',books:'الكتب'};
+    var mp=$('meParts');mp.innerHTML='';
+    Object.keys(names).forEach(function(g){
+      var d=document.createElement('div');d.className='part';
+      d.innerHTML='<b>'+AR(cur.parts[g]||0)+'</b><span>'+names[g]+'</span>';mp.appendChild(d);
+    });
+    // هدف
+    var goal=goals()[state.month]||suggestGoal(state.month,sum);
+    var pct2=Math.max(0,Math.min(100,Math.round(cur.pts/goal*100)));
+    $('goalFill').style.width=pct2+'%';$('goalBar').setAttribute('aria-valuenow',String(pct2));
+    $('goalPts').textContent=AR(cur.pts);$('goalVal').textContent=AR(goal);$('goalPct').textContent=AR(pct2)+'٪';
+    $('goalInput').value=goal;
+    var days=state.cal[state.month]||[],today=iso(new Date()),left=days.filter(function(x){return x.iso>=today}).length;
+    var hint;
+    if(cur.pts>=goal)hint='🎉 حققت هدف هذا الشهر. زِد الهدف لو أحببت.';
+    else if(state.month!==P.currentMonth())hint='انتهى هذا الشهر قبل بلوغ الهدف. جرّب هدفًا أنسب للشهر القادم.';
+    else if(left>0){var need=Math.ceil((goal-cur.pts)/left);hint='تحتاج حوالي '+AR(need)+' نقطة كل يوم لبقية الشهر ('+AR(left)+' يومًا) لتبلغ الهدف.'+(need>P.cap?' (الهدف أعلى من سقف اليوم، فالأفضل خفضه).':'')}
+    else hint='—';
+    $('goalHint').textContent=hint;
+    // تقويم
+    var cal=$('cal');cal.innerHTML='';
+    var max=Math.max(1,cur.best);
+    days.forEach(function(x){
+      var s=P.dayScore(state.records[x.iso]),r=s/max,l=s<=0?0:r<.25?1:r<.5?2:r<.8?3:4;
+      var d=document.createElement('div');
+      d.className='d'+(l?' l'+l:'')+(x.iso===today?' today':'')+(x.iso>today?' future':'');
+      d.textContent=AR(x.d);d.title=AR(x.d)+' — '+AR(Math.round(s))+' نقطة';cal.appendChild(d);
+    });
+    if(!days.length)cal.innerHTML='<div class="empty" style="grid-column:1/-1">لا بيانات لهذا الشهر.</div>';
+    // أعمدة المقارنة
+    var keys=state.months.slice(-6),bars=$('bars');bars.innerHTML='';
+    var mx=Math.max.apply(null,keys.map(function(k){return (sum[k]||{pts:0}).pts}).concat([1]));
+    keys.forEach(function(k){
+      var v=(sum[k]||{pts:0}).pts,row=document.createElement('div');
+      row.className='bar-row'+(k===state.month?' cur':'');
+      row.innerHTML='<span>'+P.monthLabel(k)+'</span><div class="tr"><i style="width:0"></i></div><b>'+AR(v)+'</b>';
+      bars.appendChild(row);
+      setTimeout(function(){row.querySelector('i').style.width=Math.round(v/mx*100)+'%'},30);
     });
   }
-  window.exportDb=function(){
-    if(!confirm('⚠️ نسخة القاعدة تحتوي بريد وواتساب كل المشاركين. احفظها في مكان خاص بك ولا تشاركها. متابعة؟')) return;
-    requireOrganizer().then(function(ok){
-      if(!ok) return;
-      RFQ_CONTEST.exportAll().then(function(data){
-        download(JSON.stringify(data,null,2), 'rafiq-contest-db-'+RFQ_CONTEST.currentMonth()+'.json');
-        toast('تم حفظ نسخة القاعدة');
-      });
-    });
-  };
-  window.exportCard=function(){
-    RFQ_CONTEST.card().then(function(data){
-      download(JSON.stringify(data,null,2), 'rafiq-contest-card-'+data.month+'.json');
-      toast('تم تصدير بطاقتك');
-    }).catch(function(e){ toast(e.message||'تعذّر التصدير'); });
-  };
-  function download(text, name){
-    var blob = new Blob([text], {type:'application/json'});
-    var a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = name;
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(function(){ a.remove(); URL.revokeObjectURL(a.href); }, 500);
-  }
-  function readFile(input){
-    return new Promise(function(resolve, reject){
-      var f = input.files && input.files[0];
-      if(!f) { reject(new Error('لم يتم اختيار ملف')); return; }
-      var r = new FileReader();
-      r.onload = function(){ try{ resolve(JSON.parse(String(r.result))); }catch(e){ reject(new Error('الملف غير صالح')); } };
-      r.onerror = function(){ reject(new Error('تعذّرت قراءة الملف')); };
-      r.readAsText(f);
-    });
-  }
-  window.importDb=function(input){
-    requireOrganizer().then(function(ok){
-      if(!ok){ input.value=''; return; }
-      return readFile(input).then(function(data){
-        return RFQ_CONTEST.importAll(data);
-      }).then(function(res){
-        toast('تم الدمج — '+res.added+' حسابًا جديدًا');
-        refreshAll();
-      }).catch(function(e){ toast(e.message||'فشل الاستيراد'); })
-        .then(function(){ input.value=''; });
-    });
-  };
-  window.importCard=function(input){
-    requireOrganizer().then(function(ok){
-      if(!ok){ input.value=''; return; }
-      return readFile(input).then(function(data){
-        return RFQ_CONTEST.importCard(data);
-      }).then(function(){
-        toast('تم دمج بطاقة المتسابق ✓');
-        renderBoard(); renderDbStats();
-      }).catch(function(e){ toast(e.message||'فشل دمج البطاقة'); })
-        .then(function(){ input.value=''; });
-    });
-  };
-  window.deleteDemo=function(){
-    if(!confirm('حذف جميع الأعضاء التجريبيين ودرجاتهم؟ الحسابات الحقيقية تبقى كما هي.')) return;
-    requireOrganizer().then(function(ok){
-      if(!ok) return;
-      RFQ_CONTEST.clearDemo().then(function(){ toast('تم حذف البيانات التجريبية'); refreshAll(); });
-    });
+
+  window.refresh=function(manual){
+    return P.readAll().then(function(data){
+      state.records=data.records||{};
+      state.months=P.months(state.records);
+      if(!state.month||state.months.indexOf(state.month)<0)state.month=P.currentMonth();
+      render();
+      var n=Object.keys(state.records).length;
+      $('syncNote').textContent=n?('آخر تحديث الآن — يُقرأ '+AR(n)+' يومًا من سجلك على هذا الجهاز.'):'لا توجد أيام مسجّلة بعد. سجّل عبادتك في «الرفيق اليومي» وستظهر نقاطك هنا.';
+      if(manual)toast('تم تحديث نقاطك ✔');
+    }).catch(function(){ if(manual)toast('تعذّرت قراءة السجل'); });
   };
 
-  /* ---------- بدء ---------- */
-  function boot(){
-    var m = document.documentElement.getAttribute('data-mode');
-    $('themeIco').textContent = m==='light' ? '🌙' : '☀️';
-    $('hijriPill').textContent = 'الشهر الحالي: ' + RFQ_CONTEST.monthLabel(RFQ_CONTEST.currentMonth());
-    state.month = RFQ_CONTEST.currentMonth();
-    RFQ_CONTEST.ready
-      .then(function(){ return RFQ_CONTEST.me(); })
-      .then(function(m){
-        if(!m) return refreshAll();
-        return syncMe(false).then(refreshAll);
-      })
-      .catch(function(err){
-        console.warn(err);
-        refreshAll();
-      });
+  /* ---------- تصدير ---------- */
+  window.exportProgress=function(){
+    var sum=summaries(),g=goals();
+    var data={app:'rafiq-almuslim',type:'personal-challenge',exportedAt:new Date().toISOString(),
+      months:state.months.map(function(k){var s=sum[k];return {month:k,label:s.label,points:s.pts,activeDays:s.days,bestDay:Math.round(s.best),parts:s.parts,goal:g[k]||null}})};
+    var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+    var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='rafiq-challenge-'+iso(new Date())+'.json';
+    document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},500);
+    toast('تم تصدير تقدّمك ✔');
+  };
+
+  /* ---------- حذف بيانات الحساب القديم ---------- */
+  var LEGACY_DB='rafiq-contest-db';
+  function legacyExists(){
+    return new Promise(function(res){
+      var ls=false;try{for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&k.indexOf('rfq_contest')===0){ls=true;break}}}catch(e){}
+      if(!window.indexedDB){res(ls);return}
+      if(indexedDB.databases){indexedDB.databases().then(function(l){res(ls||l.some(function(x){return x.name===LEGACY_DB}))}).catch(function(){res(ls)});return}
+      var existed=true,r=indexedDB.open(LEGACY_DB);
+      r.onupgradeneeded=function(){existed=false};
+      r.onsuccess=function(){r.result.close();if(!existed)try{indexedDB.deleteDatabase(LEGACY_DB)}catch(e){}res(ls||existed)};
+      r.onerror=function(){res(ls)};
+    });
   }
-  boot();
+  window.purgeLegacy=function(){
+    if(!confirm('سيتم حذف البريد ورقم الواتساب وكلمة المرور المحفوظة للحساب القديم من هذا الجهاز. هل تريد المتابعة؟'))return;
+    try{var rm=[];for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&k.indexOf('rfq_contest')===0)rm.push(k)}rm.forEach(function(k){localStorage.removeItem(k)})}catch(e){}
+    try{
+      var r=indexedDB.deleteDatabase(LEGACY_DB);
+      r.onsuccess=r.onerror=r.onblocked=function(){$('legacyCard').classList.add('hidden');toast('تم حذف بيانات الحساب القديم ✔')};
+    }catch(e){$('legacyCard').classList.add('hidden')}
+  };
+
+  /* ---------- تشغيل ---------- */
+  state.cal=buildCalendar();
+  var h=hp(new Date()),names=['محرم','صفر','ربيع الأول','ربيع الآخر','جمادى الأولى','جمادى الآخرة','رجب','شعبان','رمضان','شوال','ذو القعدة','ذو الحجة'];
+  $('hijriPill').textContent=AR(h.d)+' '+names[(h.m-1+12)%12]+' '+AR(h.y)+' هـ';
+  legacyExists().then(function(x){if(x)$('legacyCard').classList.remove('hidden')});
+  window.refresh(false);
+  document.addEventListener('visibilitychange',function(){if(!document.hidden)window.refresh(false)});
 })();
 </script>
-
-<script>function goToRafiqHome(){try{if(window.parent!==window){window.parent.postMessage({type:"rafiq-contest-home"},"*");return false}}catch(e){}try{if(document.referrer&&new URL(document.referrer).origin===location.origin&&history.length>1){history.back();return false}}catch(e){}location.href="index.html";return false}</script>
 </body>
 </html>

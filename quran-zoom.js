@@ -9,67 +9,17 @@
 (function () {
   'use strict';
   var KZ = 'rm_qz', KE = 'rm_qz_easy', KH = 'rm_qz_hint';
-  var MIN = 1, MAX = 4, STEP = 0.25;
+  var MIN = 1, MAX = 4, STEP = 0.25, SNAP_MAX = 1.12;
   var z = 1, easy = false;
   var $ = function (id) { return document.getElementById(id); };
   var ar = function (n) { return String(n); };
   function load() {
-    try { var v = parseFloat(localStorage.getItem(KZ)); if (v >= MIN && v <= MAX) z = v; easy = localStorage.getItem(KE) === '1'; } catch (e) {}
+    try { var v = parseFloat(localStorage.getItem(KZ)); if (v >= MIN && v <= MAX) z = (v > 1 && v < SNAP_MAX) ? 1 : v; easy = localStorage.getItem(KE) === '1'; } catch (e) {}
   }
   function save() { try { localStorage.setItem(KZ, String(z)); localStorage.setItem(KE, easy ? '1' : '0'); } catch (e) {} }
 
   /* ---------------- CSS ---------------- */
-  var css = '\
-#readerView .img-wrapper.rmz-on{overflow-x:auto;overflow-y:hidden;justify-content:flex-start!important;direction:ltr;-webkit-overflow-scrolling:touch;scrollbar-width:none;transition:none!important}\
-#readerView .img-wrapper.rmz-on::-webkit-scrollbar{display:none}\
-#readerView .img-wrapper.rmz-on .mushaf-page-img{width:calc(var(--rmz,1)*100%)!important;max-width:none!important;flex:0 0 auto}\
-.immersive .page-image-area{position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;min-height:100dvh!important;z-index:2200!important;overflow:hidden!important}\
-.immersive .img-wrapper{width:100vw!important;max-width:100vw!important;height:100dvh!important;max-height:100dvh!important;overflow:hidden!important;background:#fffdf5!important}\
-.immersive .img-wrapper{box-shadow:none!important;border-radius:0!important;padding:0!important;margin:0!important;border:0!important}\
-.immersive .mushaf-page-img{width:auto!important;height:auto!important;max-width:100vw!important;max-height:100dvh!important;object-fit:contain!important;object-position:center!important;margin:0 auto!important;border-radius:0!important}\
-html.rmz-fullpage,html.rmz-fullpage body{overflow:hidden!important;overscroll-behavior:none!important;background:#fffdf5!important}\
-html.rmz-fullpage #rmzDock{display:none!important}\
-#pageImageArea{touch-action:pan-x pan-y}\
-#rmzDock{display:none!important}\
-#rmzMain{display:flex;align-items:center;gap:8px;border:0;cursor:pointer;border-radius:999px;padding:12px 20px 12px 16px;font:800 1.05rem Tajawal,sans-serif;color:#2a1c00;background:linear-gradient(135deg,#f3d27a,#c9972b);box-shadow:0 4px 0 #8a6414,0 10px 20px rgba(0,0,0,.4);min-height:56px;-webkit-tap-highlight-color:transparent}\
-#rmzMain:active{transform:translateY(3px);box-shadow:0 1px 0 #8a6414,0 4px 10px rgba(0,0,0,.4)}\
-#rmzMain .ic{font-size:1.5rem;line-height:1}\
-#rmzMain.pulse{animation:rmzPulse 1.6s ease 3}\
-@keyframes rmzPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.09)}}\
-#rmzPanel{position:absolute;left:0;bottom:70px;width:min(92vw,360px);background:var(--panel-bg,#0e1a2b);color:var(--text,#f3ecd2);border:2px solid rgba(212,175,55,.6);border-radius:22px;padding:16px;box-shadow:0 18px 50px rgba(0,0,0,.55);display:none}\
-#rmzPanel.open{display:block;animation:rmzIn .18s ease}\
-@keyframes rmzIn{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:none}}\
-body:not(.dark-mode) #rmzPanel{background:#fffdf0;color:#3a2a00;border-color:#b8912a}\
-.rmz-title{display:flex;justify-content:space-between;align-items:center;font-weight:800;font-size:1.1rem;margin-bottom:12px}\
-.rmz-x{border:0;background:rgba(212,175,55,.2);color:inherit;width:40px;height:40px;border-radius:50%;font-size:1.1rem;cursor:pointer}\
-.rmz-row{display:flex;align-items:center;gap:10px;justify-content:space-between}\
-.rmz-big{flex:0 0 76px;height:76px;border:0;border-radius:20px;font:900 2.4rem Tajawal,sans-serif;color:#2a1c00;background:linear-gradient(135deg,#f3d27a,#c9972b);box-shadow:0 4px 0 #8a6414,0 8px 14px rgba(0,0,0,.35);cursor:pointer;-webkit-tap-highlight-color:transparent;line-height:1}\
-.rmz-big:active{transform:translateY(3px);box-shadow:0 1px 0 #8a6414}\
-.rmz-big[disabled]{opacity:.35;filter:grayscale(.6)}\
-.rmz-lvl{flex:1;text-align:center}\
-.rmz-lvl b{display:block;font-size:2rem;font-weight:900;color:#c9972b}\
-.rmz-lvl span{font-size:.8rem;opacity:.8}\
-.rmz-presets{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0}\
-.rmz-chip{border:2px solid rgba(212,175,55,.55);background:transparent;color:inherit;border-radius:14px;padding:12px 4px;font:800 .95rem Tajawal,sans-serif;cursor:pointer;line-height:1.35;min-height:56px}\
-.rmz-chip small{display:block;font-weight:600;opacity:.75;font-size:.75rem}\
-.rmz-chip.on{background:linear-gradient(135deg,#f3d27a,#c9972b);color:#2a1c00;border-color:#8a6414}\
-.rmz-easy{display:flex;align-items:center;gap:12px;padding:12px;border-radius:14px;background:rgba(212,175,55,.12);cursor:pointer;margin-top:4px}\
-.rmz-easy .t{flex:1;font-weight:800;font-size:.95rem;line-height:1.5}.rmz-easy .t small{display:block;font-weight:600;opacity:.8;font-size:.78rem}\
-.rmz-sw{width:56px;height:32px;border-radius:999px;background:#777;position:relative;flex:0 0 56px;transition:background .2s}\
-.rmz-sw::after{content:"";position:absolute;top:3px;right:3px;width:26px;height:26px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 2px 4px rgba(0,0,0,.4)}\
-.rmz-easy.on .rmz-sw{background:#2d9a4a}.rmz-easy.on .rmz-sw::after{transform:translateX(-24px)}\
-.rmz-reset{width:100%;margin-top:10px;border:0;background:transparent;color:inherit;opacity:.8;font:700 .9rem Tajawal,sans-serif;padding:10px;cursor:pointer;text-decoration:underline}\
-#rmzToast{position:fixed;left:50%;top:84px;transform:translateX(-50%) scale(.9);background:rgba(20,16,4,.92);color:#f6e3a1;border:1px solid rgba(212,175,55,.6);border-radius:16px;padding:12px 18px;font:700 .95rem Tajawal,sans-serif;z-index:3500;opacity:0;pointer-events:none;transition:all .25s;max-width:88vw;text-align:center;line-height:1.7;direction:rtl}\
-#rmzToast.show{opacity:1;transform:translateX(-50%) scale(1)}\
-/* الوضع المريح */\
-html.rmz-easy .nav-bar{height:92px!important;gap:8px!important;overflow-x:auto;justify-content:flex-start!important;scrollbar-width:none}html.rmz-easy .nav-bar>*{flex-shrink:0}\
-html.rmz-easy .nav-bar .nav-btn{font-size:1.1rem!important;min-height:64px!important;padding:8px 12px!important;border-radius:16px!important;font-weight:800!important}\
-html.rmz-easy .nav-jump-input{font-size:1.3rem!important;height:56px!important;min-width:84px}\
-html.rmz-easy #rmzDock{bottom:108px}\
-html.rmz-easy .mushaf-container{padding-bottom:100px!important}\
-html.rmz-easy #tafseerBody{zoom:var(--rmz-ts,1.5)}\
-@media (max-width:380px){.rmz-big{flex-basis:64px;height:64px;font-size:2rem}}';
-  var st = document.createElement('style'); st.id = 'rmz-css'; st.textContent = css; document.head.appendChild(st);
+  /* الأنماط انتقلت إلى rafiq-mushaf.css (ملف واحد لكل طبقات المصحف) */
 
   /* ---------------- UI ---------------- */
   function build() {
@@ -210,42 +160,161 @@ html.rmz-easy #tafseerBody{zoom:var(--rmz-ts,1.5)}\
     toast(fitMode ? 'وضع القراءة: الصفحة بملء الشاشة — اضغط مرتين للعودة' : 'تم الرجوع إلى عرض المصحف العادي');
   }
 
-  /* ---------------- اللمس: قرص + ضغطتان ---------------- */
-  var pinch = null, lastTap = 0, lastTapXY = null, tapStart = null;
+  /* ---------------- اللمس: قرص + ضغطتان + قلب الصفحة ----------------
+     قواعد صارمة حتى لا يتحوّل التمرير/السحب إلى تكبير بالخطأ:
+       1) القرصة لا تبدأ إلا لو تحرّك الإصبعان معًا في اتجاهين متعاكسين (إبهام ماسك أو
+          سحب إصبع واحد أو تمرير بإصبعين لا يُحسب قرصة).
+       2) أي تكبير بين 100٪ و112٪ بعد الإيماءة يعود لـ 100٪ (لا تكبير عالق يبتلع سحب قلب الصفحة).
+       3) الضغطتان: نافذة 350ms وقرب 70px، وضغطة أوقفت تمريرًا جاريًا لا تُحسب.
+       4) لو كانت الصفحة مكبّرة وسحبت عند حافتها يُقلب الصفحة بدل أن لا يحدث شيء.
+       5) touchcancel يُنهي القرصة ويثبّت الحالة. */
+  var pinch = null, cand = null, lastTap = 0, lastTapXY = null, tapStart = null, one = null, swipeStart = null;
+  var lastScrollAt = 0, lastTouchEndAt = 0, multi = false, two = null;   /* multi: الإيماءة الحالية شارك فيها أكثر من إصبع */
+  window.__rmLastScrollAt = 0;
   function inArea(t) { var a = $('pageImageArea'); return a && t && a.contains(t); }
   function dist(a, b) { return Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY); }
+  function mid(a, b) { return { x: (a.clientX + b.clientX) / 2, y: (a.clientY + b.clientY) / 2 }; }
+  function snapZ(v) { v = Math.round(v * 20) / 20; return (v > 1 && v < SNAP_MAX) ? 1 : v; }
+  function endPinch(msg) {
+    var was = pinch; pinch = null; cand = null;
+    if (!was) return;
+    z = Math.max(MIN, Math.min(MAX, snapZ(z))); save(); apply(true);
+    if (msg !== false) toast('🔍 ' + ar(Math.round(z * 100)) + '٪');
+  }
+  /* آخر مرة تحرّكت فيها الصفحة بالتمرير: لتمييز ضغطة "إيقاف الاندفاع" عن ضغطة حقيقية */
+  window.addEventListener('scroll', function (e) {
+    var t = e.target;
+    if (t === document || (t && t.id === 'imgWrapper')) lastScrollAt = window.__rmLastScrollAt = Date.now();
+  }, { capture: true, passive: true });
+
   window.addEventListener('touchstart', function (e) {
     if (!inArea(e.target)) return;
-    if (e.touches.length === 2) { pinch = { d: dist(e.touches[0], e.touches[1]), z: z }; tapStart = null; e.stopPropagation(); }
-    else { tapStart = { x: e.touches[0].clientX, y: e.touches[0].clientY }; if (z > 1.001) e.stopPropagation(); } /* لا تقلّب الصفحة أثناء التحريك */
+    var n = e.touches.length, now = Date.now(), w = wrapper();
+    if (n === 1) {
+      multi = false; two = null;
+      pinch = null; cand = null;                       /* لمسة جديدة: لا تُبقِ قرصة قديمة عالقة */
+      var t = e.touches[0];
+      tapStart = { x: t.clientX, y: t.clientY, t: now, fling: (now - lastScrollAt) < 160 };
+      one = { x: t.clientX, y: t.clientY, moved: 0 };
+      swipeStart = { x: t.clientX, y: t.clientY, sl: w ? w.scrollLeft : 0 };
+      if (z > 1.001) e.stopPropagation();              /* لا تقلّب الصفحة أثناء التحريك */
+    } else if (n >= 2) {
+      multi = true; tapStart = null; swipeStart = null;
+      if (n > 2) { cand = null; return; }
+      var a = e.touches[0], b = e.touches[1], d = dist(a, b);
+      two = { a0: { x: a.clientX, y: a.clientY }, b0: { x: b.clientX, y: b.clientY }, aL: { x: a.clientX, y: a.clientY }, bL: { x: b.clientX, y: b.clientY } };
+      var lim = Math.max(300, 0.7 * window.innerWidth);   /* إبهامان على حافتي الشاشة الأفقية ليسا قرصة */
+      if (d < 40 || d > lim || (one && one.moved > 18)) { cand = null; return; }
+      cand = { d0: d, m0: mid(a, b), a0: { x: a.clientX, y: a.clientY }, b0: { x: b.clientX, y: b.clientY } };
+      e.stopPropagation();
+    }
   }, { capture: true, passive: true });
+
+  /* المتصفح يتجاهل التمرير بإصبعين حين يكون التكبير الأصلي ممنوعًا (touch-action). فإن كان
+     إبهام ماسك الجهاز وإصبع آخر يسحب نمرّر نحن الصفحة بحركة الإصبع المتحرك. */
+  function manualScroll(e, a, b) {
+    if (!two || e.touches.length !== 2) return;
+    var da = { x: a.clientX - two.aL.x, y: a.clientY - two.aL.y }, db = { x: b.clientX - two.bL.x, y: b.clientY - two.bL.y };
+    var sa = Math.hypot(a.clientX - two.a0.x, a.clientY - two.a0.y), sb = Math.hypot(b.clientX - two.b0.x, b.clientY - two.b0.y);
+    two.aL = { x: a.clientX, y: a.clientY }; two.bL = { x: b.clientX, y: b.clientY };
+    var dx, dy;
+    if (sa < 6 && sb >= 6) { dx = db.x; dy = db.y; }          /* a إبهام ثابت: اتبع b */
+    else if (sb < 6 && sa >= 6) { dx = da.x; dy = da.y; }     /* b ثابت: اتبع a */
+    else { dx = (da.x + db.x) / 2; dy = (da.y + db.y) / 2; }
+    if (!dx && !dy) return;
+    if (e.cancelable) e.preventDefault();
+    var w = wrapper();
+    var inner = w && (w.scrollHeight - w.clientHeight > 1) && /(auto|scroll)/.test(getComputedStyle(w).overflowY);
+    if (inner) w.scrollTop -= dy; else window.scrollBy(0, -dy);
+    if (z > 1.001 && w) w.scrollLeft -= dx;
+  }
+
   window.addEventListener('touchmove', function (e) {
-    if (pinch && e.touches.length === 2) {
+    var n = e.touches.length;
+    if (n === 1) {
+      if (one) { var t = e.touches[0]; one.moved = Math.max(one.moved, Math.hypot(t.clientX - one.x, t.clientY - one.y)); }
+      return;
+    }
+    if (n !== 2) return;
+    var a = e.touches[0], b = e.touches[1];
+    if (cand && !pinch) {
+      var da = Math.hypot(a.clientX - cand.a0.x, a.clientY - cand.a0.y), db = Math.hypot(b.clientX - cand.b0.x, b.clientY - cand.b0.y);
+      var d = dist(a, b), dd = Math.abs(d - cand.d0), m = mid(a, b), dm = Math.hypot(m.x - cand.m0.x, m.y - cand.m0.y);
+      if (da >= 8 && db >= 8 && dd >= 14 && dd > 1.3 * dm) pinch = { d: d, z: z };   /* قرصة حقيقية: الإصبعان يتباعدان/يتقاربان معًا */
+      else { manualScroll(e, a, b); return; }
+    } else if (!cand && !pinch && two) { manualScroll(e, a, b); return; }
+    if (pinch) {
       e.preventDefault(); e.stopPropagation();
-      var nz = pinch.z * (dist(e.touches[0], e.touches[1]) / pinch.d);
+      var nz = pinch.z * (dist(a, b) / pinch.d);
       nz = Math.max(MIN, Math.min(MAX, nz));
       z = nz; apply(true);
     }
   }, { capture: true, passive: false });
+
   window.addEventListener('touchend', function (e) {
-    if (pinch) { if (e.touches.length < 2) { pinch = null; z = Math.round(z * 20) / 20; save(); apply(true); toast('🔍 ' + ar(Math.round(z * 100)) + '٪'); } e.stopPropagation(); return; }
+    lastTouchEndAt = Date.now();
+    if (pinch) { if (e.touches.length < 2) endPinch(); e.stopPropagation(); return; }
+    if (cand && e.touches.length < 2) cand = null;
+    if (multi) {                                  /* إبهام ماسك + إصبع يسحب: لا قلب صفحة ولا ضغطتان */
+      if (e.touches.length === 0) { multi = false; two = null; lastTap = 0; }
+      if (inArea(e.target)) e.stopPropagation();
+      return;
+    }
     if (!inArea(e.target)) return;
-    var ct = e.changedTouches[0], now = Date.now();
-    if (tapStart && Math.hypot(ct.clientX - tapStart.x, ct.clientY - tapStart.y) > 24) { tapStart = null; lastTap = 0; return; }
-    tapStart = null;
-    var near = lastTapXY && Math.hypot(ct.clientX - lastTapXY.x, ct.clientY - lastTapXY.y) < 100;
-    if (now - lastTap < 650 && near) {
+    var ct = e.changedTouches[0], now = Date.now(), w = wrapper();
+    /* مكبّرة وسحبة أفقية واضحة وكانت الصورة عند حافتها في اتجاه السحب (أو التكبير بسيط جدًا): اقلب الصفحة */
+    if (z > 1.001 && swipeStart && e.touches.length === 0 && w) {
+      var dx = swipeStart.x - ct.clientX, dy = Math.abs(swipeStart.y - ct.clientY);
+      if (Math.abs(dx) > 90 && Math.abs(dx) > dy * 1.8 && dy < 80 && typeof window.changePage === 'function') {
+        var rtl = getComputedStyle(w).direction === 'rtl', maxL = Math.max(0, w.scrollWidth - w.clientWidth);
+        var pos0 = rtl ? -swipeStart.sl : swipeStart.sl, pos1 = rtl ? -w.scrollLeft : w.scrollLeft;
+        /* السحب لليسار (dx>0) يحرّك المحتوى نحو الحافة اليمنى: يزيد scrollLeft */
+        var atEdgeStart = dx > 0 ? pos0 >= maxL - 2 : pos0 <= 2;
+        var atEdgeEnd = dx > 0 ? pos1 >= maxL - 2 : pos1 <= 2;
+        var tiny = maxL < 60;                       /* تكبير بسيط: لا فائدة من تحريك الصورة، اقلب الصفحة */
+        if ((atEdgeStart && Math.abs(pos1 - pos0) < 2) || (tiny && atEdgeEnd)) {
+          e.stopPropagation(); swipeStart = null; tapStart = null; lastTap = 0;
+          window.changePage(dx > 0 ? -1 : 1);
+          return;
+        }
+      }
+    }
+    swipeStart = null;
+    if (tapStart) {
+      var mv = Math.hypot(ct.clientX - tapStart.x, ct.clientY - tapStart.y), dur = now - tapStart.t, fl = tapStart.fling;
+      tapStart = null;
+      /* ليست ضغطة: حركة، أو لمسة طويلة، أو لمسة أوقفت تمريرًا جاريًا */
+      /* حركة>24: قد تكون سحبة لقلب الصفحة فلا نبتلعها. لمسة ثابتة مرفوضة: نبتلعها حتى لا يحسبها معالج الضغطتين الأصلي في quran.html */
+      if (mv > 24 || dur > 350 || fl) { lastTap = 0; if (mv <= 24) e.stopPropagation(); return; }
+    }
+    var near = lastTapXY && Math.hypot(ct.clientX - lastTapXY.x, ct.clientY - lastTapXY.y) < 70;
+    if (now - lastTap < 350 && near) {
       e.stopPropagation(); lastTap = 0;
       if (claimGesture()) togglePageFit(true);
-    } else { lastTap = now; lastTapXY = { x: ct.clientX, y: ct.clientY }; if (z > 1.001) e.stopPropagation(); }
+    } else { lastTap = now; lastTapXY = { x: ct.clientX, y: ct.clientY }; e.stopPropagation(); }   /* الضغطات يديرها هذا الملف وحده */
   }, { capture: true, passive: true });
-  window.addEventListener('touchcancel', function () { tapStart = null; lastTap = 0; }, { capture: true, passive: true });
+
+  window.addEventListener('touchcancel', function () {
+    tapStart = null; lastTap = 0; one = null; swipeStart = null; cand = null; multi = false; two = null;
+    if (pinch) endPinch(false);                         /* ثبّت التكبير ولا تتركه عالقًا */
+  }, { capture: true, passive: true });
+
   window.addEventListener('dblclick', function (e) {
     if (!inArea(e.target)) return;
+    /* ضغطة مُركّبة من المتصفح بعد لمسة: اللمس له منطقه الخاص أعلاه، فنتجاهلها */
+    if (Date.now() - lastTouchEndAt < 800) { e.preventDefault(); e.stopPropagation(); return; }
     /* ضغطة مُركّبة بعد لمسة (أو إيماءة احتُسبت للتو): ابتلعها ولا تقلب الوضع مرتين */
     if (Date.now() < suppressMouseDoubleClickUntil || !claimGesture()) { e.preventDefault(); e.stopPropagation(); return; }
     e.preventDefault(); e.stopPropagation(); togglePageFit(false);
   }, true);
+
+  /* iPhone/Safari: يتجاهل touch-action للقرص، فنمنع زووم الصفحة الأصلي داخل القارئ */
+  ['gesturestart', 'gesturechange'].forEach(function (ev) {
+    document.addEventListener(ev, function (e) {
+      var rv = $('readerView');
+      if (rv && rv.style.display !== 'none') e.preventDefault();
+    }, { passive: false });
+  });
   window.addEventListener('keydown', function (e) {
     var rv = $('readerView'); if (!rv || rv.style.display === 'none') return;
     if (e.target && /INPUT|SELECT|TEXTAREA/.test(e.target.tagName)) return;

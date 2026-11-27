@@ -1,15 +1,13 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl" data-theme="">
-<head><meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: blob: 'unsafe-inline' 'unsafe-eval'; object-src 'none'; base-uri 'self'; form-action 'self'">
-<meta charset="UTF-8">
+<head><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; media-src 'self' blob: https:; font-src 'self' data:; connect-src 'self' https:; frame-src 'self'; worker-src 'self' blob:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta charset="UTF-8"><meta name="referrer" content="strict-origin-when-cross-origin"><script src="./rafiq-storage-shim.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
 <meta name="theme-color" content="#fbf7ef">
 <title>قصص الأنبياء · للإمام ابن كثير</title>
 <meta name="description" content="كتاب قصص الأنبياء للإمام الحافظ ابن كثير — النص الكامل (84 بابًا) يعمل أونلاين وأوفلاين، بفهرس وبحث وحفظ لموضع القراءة.">
 <link rel="manifest" href="./manifest.json">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Scheherazade+New:wght@400;500;600;700&family=Reem+Kufi:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./rafiq-fonts.css?v=1">
 <script>
 /* الوضع الليلي/النهاري — يتبع إعدادات التطبيق ككل */
 (function(){
@@ -332,7 +330,7 @@ aside h3,.panel-head h4{font-family:Tajawal,"Segoe UI",Tahoma,sans-serif!importa
 </header>
 
 <!-- الغلاف -->
-<section id="cover">
+<section id="cover" role="main">
   <div class="cover-card">
     <div class="bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
     <div class="orn">✦ ❁ ✦</div>

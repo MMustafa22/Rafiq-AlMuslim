@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
-<head><meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: blob: 'unsafe-inline' 'unsafe-eval'; object-src 'none'; base-uri 'self'; form-action 'self'">
-<meta charset="UTF-8">
+<head><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; media-src 'self' blob: https:; font-src 'self' data:; connect-src 'self' https:; frame-src 'self'; worker-src 'self' blob:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta charset="UTF-8"><meta name="referrer" content="strict-origin-when-cross-origin"><script src="./rafiq-storage-shim.js"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>المكتبة الإيمانية — السيرة النبوية وقصص الأنبياء والفقه الميسر | رفيق المسلم</title>
 <meta name="description" content="المكتبة الإيمانية: السيرة النبوية كاملة في سبع محطات، وقصص الأنبياء والمرسلين بالتفصيل، وأحكام فقهية ميسرة بصيغة سؤال وجواب مع الأدلة المختصرة.">
@@ -11,10 +11,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="المكتبة الإيمانية">
 <script>try{var t=localStorage.getItem("ilm_theme");if(t==="dark"||(t==="system"&&matchMedia("(prefers-color-scheme: dark)").matches))document.documentElement.setAttribute("data-theme","dark");}catch(e){}</script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-<noscript><link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet"></noscript>
+<link rel="stylesheet" href="./rafiq-fonts.css?v=1">
+<noscript><link rel="stylesheet" href="./rafiq-fonts.css?v=1"></noscript>
 <link rel="stylesheet" href="./ilm.css">
 <script src="./rafiq-3d.js"></script><script src="./rafiq-daily-notifications.js"></script>
 </head>

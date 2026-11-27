@@ -1,0 +1,985 @@
+/* ============================================================
+   رفيق المسلم — أنماط المصحف الموحّدة (ملف واحد)
+   ------------------------------------------------------------
+   جمعنا هنا كل طبقات تنسيق صفحة المصحف التي كانت متفرقة بين 6 مصادر
+   (ملف CSS و 5 سكربتات تحقنها وقت التشغيل). الترتيب أدناه هو نفسه ترتيب
+   التطبيق القديم، لأن الأولوية بين القواعد المتساوية تعتمد على الترتيب.
+   عند التعديل: ابحث عن الصفحة/الحالة (عادي، غمر، أفقي، زووم) في القسم
+   المناسب بدل إضافة طبقة جديدة في ملف JS.
+   ============================================================ */
+
+/* ============================================================
+   1) الأساس: عرض الصفحة بنسبتها الحقيقية وأزرار التنقّل (كان rafiq-mushaf-fit.css)
+   ============================================================ */
+/* ============================================================
+   رفيق المسلم — صفحة المصحف على الموبايل (v5)
+   الهدف: الصفحة تظهر بنسبتها الحقيقية (بدون أي مطّ)، كبيرة بملء عرض
+   الشاشة من الحافة للحافة، على ورق دافئ مريح للعين، وأزرار كبيرة
+   لكبار السن. الكمبيوتر لا يتأثر (كل القواعد داخل media للموبايل).
+   --pg-ratio = عرض الصورة ÷ ارتفاعها، يضبطها rafiq-mushaf-fit.js
+   من الصورة نفسها، فتصح مع أي نسخة من المصحف.
+   ============================================================ */
+:root{--pg-ratio:.6195;--rm-paper:#fffdf5;--rm-paper-2:#f4ecd4;--rm-gold:#b8912a}
+
+/* ---------- القراءة العادية على الموبايل ---------- */
+@media (max-width:700px){
+  html body .quran-reading-split{padding:0!important;gap:0!important;max-width:100%!important}
+  
+  html body #readerView .img-wrapper{
+    background:var(--rm-paper)!important;box-shadow:none!important;border-radius:0!important;
+    /* حجز مكان الصفحة قبل تحميلها حتى لا تقفز الشاشة */
+    min-height:calc(100vw / var(--pg-ratio))!important;
+    border-bottom:2px solid rgba(184,145,42,.45)!important}
+  
+  /* المشغّل لا يغطي الصفحة أثناء القراءة */
+  html body .audio-player-container{position:relative!important}
+
+  /* أزرار تنقّل كبيرة وواضحة لكبار السن */
+  html body #navBar.nav-bar{grid-template-columns:1fr 1fr!important;gap:10px!important;padding:12px 12px calc(14px + env(safe-area-inset-bottom,0px))!important;background:var(--rm-paper-2)!important}
+  html body #navBar .nav-btn:nth-of-type(1),
+  html body #navBar .nav-btn:nth-of-type(2){min-height:68px!important;font-size:1.2rem!important;font-weight:800!important;border-radius:18px!important}
+  html body #navBar .nav-btn:nth-of-type(3),
+  html body #navBar .nav-btn:nth-of-type(4){min-height:58px!important;font-size:1.02rem!important;font-weight:700!important;border-radius:16px!important}
+  html body #navBar .nav-jump-wrap{min-height:58px!important}
+  html body #navBar .nav-jump-input{font-size:1.2rem!important;height:50px!important;max-width:none!important;text-align:center}
+}
+
+/* ---------- وضع القراءة بملء الشاشة (ضغطتان) ---------- */
+/* أكبر حجم ممكن دون تشويه: عرض الشاشة كاملًا، أو ارتفاعها إن كانت أقصر */
+
+/* ---------- قلب الصفحة (حركة هادئة) ---------- */
+@keyframes rmcIn{from{transform:translateX(var(--rmc-from,-26px))}to{transform:none}}
+html[data-rm-dir="n"]{--rmc-from:-26px}html[data-rm-dir="p"]{--rmc-from:26px}
+html[data-rm-dir] #mushafImg{animation:rmcIn .34s cubic-bezier(.2,.8,.2,1)}
+@media (prefers-reduced-motion:reduce){html[data-rm-dir] #mushafImg{animation:none}}
+
+/* ---------- صفحة داكنة للعين (ليلًا) ---------- */
+html.rm-night #mushafImg{filter:invert(1) hue-rotate(180deg) brightness(.88) contrast(.96)}
+html.rm-night body #readerView .page-image-area,
+html.rm-night body #readerView .img-wrapper,
+html.rm-night body .immersive .page-image-area,
+html.rm-night body .immersive .img-wrapper{background:#15120b!important}
+html.rm-night body #readerView .img-wrapper{border-bottom-color:rgba(212,175,55,.3)!important}
+
+/* ============================================================
+   2) الزووم والتكبير بالإصبعين (كان يُحقن من quran-zoom.js)
+   ============================================================ */
+#readerView .img-wrapper.rmz-on {
+  overflow-x:auto;
+  overflow-y:hidden;
+  justify-content:flex-start!important;
+  direction:ltr;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+  transition:none!important
+}
+#readerView .img-wrapper.rmz-on::-webkit-scrollbar {
+  display:none
+}
+#readerView .img-wrapper.rmz-on .mushaf-page-img {
+  width:calc(var(--rmz,1)*100%)!important;
+  max-width:none!important;
+  flex:0 0 auto
+}
+
+html.rmz-fullpage,html.rmz-fullpage body {
+  overflow:hidden!important;
+  overscroll-behavior:none!important;
+  background:#fffdf5!important
+}
+html.rmz-fullpage #rmzDock {
+  display:none!important
+}
+#pageImageArea {
+  touch-action:pan-x pan-y
+}
+#rmzDock {
+  display:none!important
+}
+#rmzMain {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  border:0;
+  cursor:pointer;
+  border-radius:999px;
+  padding:12px 20px 12px 16px;
+  font:800 1.05rem Tajawal,sans-serif;
+  color:#2a1c00;
+  background:linear-gradient(135deg,#f3d27a,#c9972b);
+  box-shadow:0 4px 0 #8a6414,0 10px 20px rgba(0,0,0,.4);
+  min-height:56px;
+  -webkit-tap-highlight-color:transparent
+}
+#rmzMain:active {
+  transform:translateY(3px);
+  box-shadow:0 1px 0 #8a6414,0 4px 10px rgba(0,0,0,.4)
+}
+#rmzMain .ic {
+  font-size:1.5rem;
+  line-height:1
+}
+#rmzMain.pulse {
+  animation:rmzPulse 1.6s ease 3
+}
+@keyframes rmzPulse {
+  0%,100% {
+    transform:scale(1)
+  }
+  50% {
+    transform:scale(1.09)
+  }
+}
+#rmzPanel {
+  position:absolute;
+  left:0;
+  bottom:70px;
+  width:min(92vw,360px);
+  background:var(--panel-bg,#0e1a2b);
+  color:var(--text,#f3ecd2);
+  border:2px solid rgba(212,175,55,.6);
+  border-radius:22px;
+  padding:16px;
+  box-shadow:0 18px 50px rgba(0,0,0,.55);
+  display:none
+}
+#rmzPanel.open {
+  display:block;
+  animation:rmzIn .18s ease
+}
+@keyframes rmzIn {
+  from {
+    opacity:0;
+    transform:translateY(10px) scale(.97)
+  }
+  to {
+    opacity:1;
+    transform:none
+  }
+}
+body:not(.dark-mode) #rmzPanel {
+  background:#fffdf0;
+  color:#3a2a00;
+  border-color:#b8912a
+}
+.rmz-title {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-weight:800;
+  font-size:1.1rem;
+  margin-bottom:12px
+}
+.rmz-x {
+  border:0;
+  background:rgba(212,175,55,.2);
+  color:inherit;
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  font-size:1.1rem;
+  cursor:pointer
+}
+.rmz-row {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  justify-content:space-between
+}
+.rmz-big {
+  flex:0 0 76px;
+  height:76px;
+  border:0;
+  border-radius:20px;
+  font:900 2.4rem Tajawal,sans-serif;
+  color:#2a1c00;
+  background:linear-gradient(135deg,#f3d27a,#c9972b);
+  box-shadow:0 4px 0 #8a6414,0 8px 14px rgba(0,0,0,.35);
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+  line-height:1
+}
+.rmz-big:active {
+  transform:translateY(3px);
+  box-shadow:0 1px 0 #8a6414
+}
+.rmz-big[disabled] {
+  opacity:.35;
+  filter:grayscale(.6)
+}
+.rmz-lvl {
+  flex:1;
+  text-align:center
+}
+.rmz-lvl b {
+  display:block;
+  font-size:2rem;
+  font-weight:900;
+  color:#c9972b
+}
+.rmz-lvl span {
+  font-size:.8rem;
+  opacity:.8
+}
+.rmz-presets {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  margin:14px 0
+}
+.rmz-chip {
+  border:2px solid rgba(212,175,55,.55);
+  background:transparent;
+  color:inherit;
+  border-radius:14px;
+  padding:12px 4px;
+  font:800 .95rem Tajawal,sans-serif;
+  cursor:pointer;
+  line-height:1.35;
+  min-height:56px
+}
+.rmz-chip small {
+  display:block;
+  font-weight:600;
+  opacity:.75;
+  font-size:.75rem
+}
+.rmz-chip.on {
+  background:linear-gradient(135deg,#f3d27a,#c9972b);
+  color:#2a1c00;
+  border-color:#8a6414
+}
+.rmz-easy {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:12px;
+  border-radius:14px;
+  background:rgba(212,175,55,.12);
+  cursor:pointer;
+  margin-top:4px
+}
+.rmz-easy .t {
+  flex:1;
+  font-weight:800;
+  font-size:.95rem;
+  line-height:1.5
+}
+.rmz-easy .t small {
+  display:block;
+  font-weight:600;
+  opacity:.8;
+  font-size:.78rem
+}
+.rmz-sw {
+  width:56px;
+  height:32px;
+  border-radius:999px;
+  background:#777;
+  position:relative;
+  flex:0 0 56px;
+  transition:background .2s
+}
+.rmz-sw::after {
+  content:"";
+  position:absolute;
+  top:3px;
+  right:3px;
+  width:26px;
+  height:26px;
+  border-radius:50%;
+  background:#fff;
+  transition:transform .2s;
+  box-shadow:0 2px 4px rgba(0,0,0,.4)
+}
+.rmz-easy.on .rmz-sw {
+  background:#2d9a4a
+}
+.rmz-easy.on .rmz-sw::after {
+  transform:translateX(-24px)
+}
+.rmz-reset {
+  width:100%;
+  margin-top:10px;
+  border:0;
+  background:transparent;
+  color:inherit;
+  opacity:.8;
+  font:700 .9rem Tajawal,sans-serif;
+  padding:10px;
+  cursor:pointer;
+  text-decoration:underline
+}
+#rmzToast {
+  position:fixed;
+  left:50%;
+  top:84px;
+  transform:translateX(-50%) scale(.9);
+  background:rgba(20,16,4,.92);
+  color:#f6e3a1;
+  border:1px solid rgba(212,175,55,.6);
+  border-radius:16px;
+  padding:12px 18px;
+  font:700 .95rem Tajawal,sans-serif;
+  z-index:3500;
+  opacity:0;
+  pointer-events:none;
+  transition:all .25s;
+  max-width:88vw;
+  text-align:center;
+  line-height:1.7;
+  direction:rtl
+}
+#rmzToast.show {
+  opacity:1;
+  transform:translateX(-50%) scale(1)
+}
+/* الوضع المريح */
+html.rmz-easy .nav-bar {
+  height:92px!important;
+  gap:8px!important;
+  overflow-x:auto;
+  justify-content:flex-start!important;
+  scrollbar-width:none
+}
+html.rmz-easy .nav-bar>* {
+  flex-shrink:0
+}
+html.rmz-easy .nav-bar .nav-btn {
+  font-size:1.1rem!important;
+  min-height:64px!important;
+  padding:8px 12px!important;
+  border-radius:16px!important;
+  font-weight:800!important
+}
+html.rmz-easy .nav-jump-input {
+  font-size:1.3rem!important;
+  height:56px!important;
+  min-width:84px
+}
+html.rmz-easy #rmzDock {
+  bottom:108px
+}
+html.rmz-easy .mushaf-container {
+  padding-bottom:100px!important
+}
+html.rmz-easy #tafseerBody {
+  zoom:var(--rmz-ts,1.5)
+}
+@media (max-width:380px) {
+  .rmz-big {
+    flex-basis:64px;
+    height:64px;
+    font-size:2rem
+  }
+}
+
+/* لمس المصحف: التمرير فقط. القرص والضغطتان يديرهما quran-zoom.js، فلا نترك زووم المتصفح
+   الأصلي يتداخل معهما (كان يسبب "زوم إن/أوت" متقطعًا عند السحب). */
+#readerView, #navBar, #pageImageArea, #imgWrapper, #imgWrapper img { touch-action: pan-x pan-y; }
+#readerView button, #navBar button, #audioPlayerBox button { touch-action: manipulation; }
+
+/* ============================================================
+   3) إعدادات راحة العين (كان يُحقن من rafiq-mushaf-comfort.js)
+   ============================================================ */
+#rmcSheet {
+  position:fixed;
+  left:50%;
+  bottom:calc(16px + env(safe-area-inset-bottom,0px));
+  max-height:88dvh;
+  overflow:auto;
+  transform:translate(-50%,16px);
+  width:min(94vw,400px);
+  z-index:3100;
+  direction:rtl;
+  background:#fffdf0;
+  color:#3a2a00;
+  border:2px solid #b8912a;
+  border-radius:24px;
+  padding:16px;
+  box-shadow:0 22px 60px rgba(0,0,0,.5);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .2s,transform .2s;
+  font-family:Tajawal,sans-serif
+}
+#rmcSheet.open {
+  opacity:1;
+  pointer-events:auto;
+  transform:translate(-50%,0)
+}
+body.dark-mode #rmcSheet {
+  background:#13203a;
+  color:#f3ecd2;
+  border-color:rgba(212,175,55,.7)
+}
+.rmc-h {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-weight:900;
+  font-size:1.15rem;
+  margin-bottom:12px
+}
+.rmc-x {
+  border:0;
+  background:rgba(212,175,55,.22);
+  color:inherit;
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  font-size:1.1rem;
+  cursor:pointer
+}
+.rmc-row {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:12px;
+  border-radius:16px;
+  background:rgba(212,175,55,.13);
+  cursor:pointer;
+  margin-bottom:10px;
+  -webkit-tap-highlight-color:transparent
+}
+.rmc-row .t {
+  flex:1;
+  font-weight:800;
+  font-size:1rem;
+  line-height:1.5
+}
+.rmc-row .t small {
+  display:block;
+  font-weight:600;
+  opacity:.8;
+  font-size:.8rem
+}
+.rmc-sw {
+  width:58px;
+  height:34px;
+  border-radius:999px;
+  background:#8a8a8a;
+  position:relative;
+  flex:0 0 58px;
+  transition:background .2s
+}
+.rmc-sw::after {
+  content:"";
+  position:absolute;
+  top:4px;
+  right:4px;
+  width:26px;
+  height:26px;
+  border-radius:50%;
+  background:#fff;
+  transition:transform .2s;
+  box-shadow:0 2px 4px rgba(0,0,0,.4)
+}
+.rmc-row.on .rmc-sw {
+  background:#2d9a4a
+}
+.rmc-row.on .rmc-sw::after {
+  transform:translateX(-24px)
+}
+.rmc-sizes {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin:2px 0 10px
+}
+.rmc-chip {
+  border:2px solid rgba(184,145,42,.7);
+  background:transparent;
+  color:inherit;
+  border-radius:16px;
+  min-height:66px;
+  font:900 1.15rem Tajawal,sans-serif;
+  cursor:pointer;
+  line-height:1.3
+}
+.rmc-chip small {
+  display:block;
+  font-weight:700;
+  opacity:.75;
+  font-size:.8rem
+}
+.rmc-chip.on {
+  background:linear-gradient(135deg,#f6dc8c,#c9972b);
+  color:#2a1c00;
+  border-color:#8a6414
+}
+.rmc-tip {
+  font-size:.82rem;
+  line-height:1.8;
+  opacity:.85;
+  padding:2px 4px
+}
+#rmcSheet.off .rmc-sizes,#rmcSheet.off .rmc-tip.z {
+  opacity:.4;
+  pointer-events:none
+}
+
+/* ============================================================
+   4) قارئ المصحف: التنسيق العام (كان يُحقن من rafiq-quran-reader.js)
+   ============================================================ */
+html body #readerView .page-image-area {
+  min-height:0!important;
+  background:var(--rm-paper,#fffdf5)!important
+}
+html body #readerView .img-wrapper {
+  min-height:0!important;
+  height:auto!important;
+  border-bottom:0!important;
+  overflow:auto!important;
+  -webkit-overflow-scrolling:touch
+}
+html body #readerView .img-wrapper:not(.rmz-on) {
+  justify-content:center!important;
+  align-items:flex-start!important
+}
+html body #readerView .img-wrapper.rmz-on {
+  justify-content:flex-start!important;
+  align-items:flex-start!important
+}
+html body #readerView .img-wrapper .mushaf-page-img,html body #readerView .img-wrapper.rmz-on .mushaf-page-img {
+  width:calc(var(--rmz,1) * 100%)!important;
+  height:auto!important;
+  max-width:none!important;
+  max-height:none!important;
+  object-fit:contain!important;
+  object-position:top center!important;
+  margin:0 auto!important;
+  display:block!important;
+  border-radius:0!important;
+  box-shadow:none!important
+}
+/* الوضع الأفقي: نفس القاعدة — الصفحة بعرض الشاشة كاملًا وطولها كامل (بلا تقصير) */
+/* الغمر: الصفحة تملأ الشاشة عرضًا وتُقرأ بالنزول، والتكبير يحرّكها */
+html body #readerView.immersive .page-image-area {
+  position:fixed!important;
+  inset:0!important;
+  width:100vw!important;
+  height:100dvh!important;
+  min-height:0!important;
+  z-index:2200!important;
+  overflow:hidden!important;
+  background:#fffdf5!important
+}
+html body #readerView.immersive .img-wrapper {
+  width:100vw!important;
+  height:100dvh!important;
+  max-width:none!important;
+  max-height:none!important;
+  min-height:0!important;
+  padding:0!important;
+  margin:0!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  overflow:auto!important;
+  align-items:flex-start!important;
+  justify-content:center!important;
+  background:#fffdf5!important
+}
+html body #readerView.immersive .img-wrapper.rmz-on {
+  justify-content:flex-start!important
+}
+
+html.rm-night body #readerView.immersive .page-image-area,html.rm-night body #readerView.immersive .img-wrapper {
+  background:#15120b!important
+}
+
+/* ============================================================
+   5) الهيدر القابل للطي ووضع الغمر (كان يُحقن من rafiq-v13.js)
+   ============================================================ */
+#audioPlayerBox {
+  overflow:hidden
+}
+
+#audioPlayerBox.rm-collapsed {
+  padding-top:0!important;
+  padding-bottom:0!important
+}
+#audioPlayerBox.rm-collapsed .mp-unified {
+  max-height:0;
+  opacity:0;
+  pointer-events:none;
+  margin:0
+}
+#audioPlayerBox.rm-collapsed .reciter-notice {
+  display:none!important
+}
+.rm-header-bar {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:7px 12px;
+  cursor:pointer;
+  user-select:none;
+  -webkit-tap-highlight-color:transparent;
+  background:rgba(212,175,55,.08);
+  border-bottom:1px solid rgba(212,175,55,.25)
+}
+body:not(.dark-mode) .rm-header-bar {
+  background:rgba(160,120,32,.08);
+  border-bottom-color:rgba(160,120,32,.22)
+}
+.rm-header-bar .rm-bar-title {
+  flex:1;
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-weight:800;
+  font-size:.92rem;
+  color:var(--gold);
+  direction:rtl
+}
+body:not(.dark-mode) .rm-header-bar .rm-bar-title {
+  color:#6b4a10
+}
+.rm-header-bar .rm-bar-arrow {
+  flex:0 0 auto;
+  width:28px;
+  height:28px;
+  border-radius:50%;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(212,175,55,.15);
+  border:1px solid rgba(212,175,55,.4);
+  color:var(--gold);
+  font-size:.85rem;
+  transition:transform .35s ease
+}
+body:not(.dark-mode) .rm-header-bar .rm-bar-arrow {
+  background:rgba(160,120,32,.12);
+  border-color:rgba(160,120,32,.4);
+  color:#7a5010
+}
+#audioPlayerBox.rm-collapsed .rm-bar-arrow {
+  transform:rotate(180deg)
+}
+.rm-header-bar.rm-hidden {
+  display:none
+}
+#audioPlayerBox.rm-intro .rm-header-bar {
+  display:none
+}
+#audioPlayerBox:not(.rm-intro) .current-surah-name {
+  display:none!important
+}
+body:not(.dark-mode) .mp-progress-row {
+  color:#5a4000!important
+}
+body:not(.dark-mode) .mp-time {
+  color:#5a4000!important
+}
+body:not(.dark-mode) .audio-playback-status {
+  color:#6b4a10;
+  background:rgba(160,120,32,.08);
+  border-color:rgba(160,120,32,.25)
+}
+body:not(.dark-mode) .reader-label {
+  color:#6b4a10!important
+}
+body:not(.dark-mode) .current-surah-name {
+  color:#6b3d00!important
+}
+body:not(.dark-mode) #curatedAudioMenus .curated-audio-label {
+  color:#6b4a10!important
+}
+body:not(.dark-mode) .reciter-coverage {
+  color:#7a5a10!important
+}
+body:not(.dark-mode) .reciter-coverage.partial {
+  color:#8a6a10!important
+}
+body:not(.dark-mode) .rmo-cnt {
+  color:#5a4000!important
+}
+body:not(.dark-mode) #rmoMsg {
+  color:#5a4000!important
+}
+body:not(.dark-mode) .mp-vol-value {
+  color:#5a4000!important
+}
+body:not(.dark-mode) .tafseer-source {
+  color:rgba(100,60,0,.75)!important
+}
+@media (max-height:520px) and (orientation:landscape) {
+  html body .quran-reading-split {
+    grid-template-columns:minmax(0,1fr)!important;
+    max-width:100%!important;
+    padding:0!important;
+    gap:0!important
+  }
+  html body .quran-translation-panel {
+    display:none!important
+  }
+  
+  
+  html body #readerView .img-wrapper {
+    min-height:0!important;
+    background:var(--rm-paper,#fffdf5)!important;
+    border-bottom:0!important;
+    box-shadow:none!important;
+    display:flex;
+    align-items:center;
+    justify-content:center
+  }
+  html body #readerView .img-wrapper .mushaf-page-img,html body #readerView .img-wrapper.rmz-on .mushaf-page-img {
+    width:100%!important;
+    height:auto!important;
+    max-height:none!important;
+    max-width:100vw!important;
+    object-fit:contain!important;
+    object-position:center!important;
+    margin:0 auto!important
+  }
+  html body #readerView.rm-land-hide-img .mushaf-page-img {
+    height:calc(100dvh - 52px)!important
+  }
+  html body #audioPlayerBox {
+    position:relative!important;
+    padding:0!important;
+    border-bottom:1px solid rgba(160,120,32,.25)
+  }
+  html body #audioPlayerBox.rm-collapsed {
+    border-bottom:1px solid rgba(160,120,32,.2)
+  }
+  html body #audioPlayerBox.rm-intro .mp-unified {
+    max-height:46dvh!important;
+    opacity:1!important;
+    pointer-events:auto!important;
+    overflow:auto
+  }
+  html body #audioPlayerBox:not(.rm-intro):not(.rm-collapsed) .mp-unified {
+    max-height:44dvh!important;
+    opacity:1!important;
+    pointer-events:auto!important;
+    overflow:auto
+  }
+  html body .rm-header-bar {
+    padding:4px 10px
+  }
+  html body .rm-header-bar .rm-bar-title {
+    font-size:.85rem
+  }
+  
+  
+  
+  
+  html body #readerView .img-wrapper.rmz-on {
+    overflow:visible!important;
+    justify-content:center!important
+  }
+  
+  
+  html body .tafseer-btn-wrap {
+    padding:2px 10px 4px;
+    gap:8px
+  }
+  html body .tafseer-btn {
+    padding:8px 8px;
+    font-size:.8rem
+  }
+  
+  
+  
+  
+  
+  
+}
+/* ============================================================
+   6) الوضع الأفقي على الموبايل: الصفحة بعرض الشاشة وعمود الأزرار (كان rafiq-landscape-fix.js)
+   ============================================================ */
+:root {
+  --rfq-side:64px
+}
+@media (orientation:landscape) and (max-height:520px) {
+  html body div#readerView:not(.immersive):not(.rm-landscape-big) .page-image-area {
+    padding:0 var(--rfq-side) 0 0!important;
+    box-sizing:border-box!important;
+    width:100%!important;
+    background:var(--rm-paper,#fffdf5)!important
+  }
+  html body div#readerView:not(.immersive):not(.rm-landscape-big) .img-wrapper {
+    width:100%!important;
+    max-width:100%!important;
+    box-sizing:border-box!important;
+    padding:0!important;
+    overflow-x:hidden!important;
+    overflow-y:visible!important;
+    display:block!important;
+    height:auto!important
+  }
+  html body div#readerView:not(.immersive):not(.rm-landscape-big) .img-wrapper.rmz-on {
+    overflow-x:auto!important;
+    overflow-y:visible!important
+  }
+  html body div#readerView:not(.immersive):not(.rm-landscape-big) .img-wrapper .mushaf-page-img,html body div#readerView:not(.immersive):not(.rm-landscape-big) .img-wrapper.rmz-on .mushaf-page-img {
+    display:block!important;
+    width:calc(var(--rmz,1) * 100%)!important;
+    max-width:none!important;
+    height:auto!important;
+    max-height:none!important;
+    margin:0 auto!important;
+    object-fit:contain!important
+  }
+  html body div#navBar.nav-bar {
+    position:fixed!important;
+    top:50%!important;
+    right:0!important;
+    left:auto!important;
+    bottom:auto!important;
+    transform:translateY(-50%)!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:stretch!important;
+    justify-content:flex-start!important;
+    flex-wrap:nowrap!important;
+    gap:6px!important;
+    width:calc(var(--rfq-side) - 4px)!important;
+    min-width:0!important;
+    max-width:none!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:calc(100dvh - 10px)!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    padding:6px 5px!important;
+    box-sizing:border-box!important;
+    background:linear-gradient(180deg,#fffdf0,#f3e8c6)!important;
+    border:1px solid rgba(160,120,32,.55)!important;
+    border-right:0!important;
+    border-radius:14px 0 0 14px!important;
+    box-shadow:-4px 4px 14px rgba(75,55,20,.22)!important;
+    z-index:900!important;
+    grid-template-columns:none!important
+  }
+  html body div#navBar.nav-bar::-webkit-scrollbar {
+    display:none
+  }
+  html body #navBar .nav-btn {
+    flex:0 0 auto!important;
+    grid-column:auto!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    text-align:center!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    min-height:38px!important;
+    padding:4px 2px!important;
+    writing-mode:horizontal-tb!important;
+    text-orientation:mixed!important;
+    white-space:normal!important;
+    word-break:keep-all!important;
+    font:800 .62rem/1.25 Tajawal,sans-serif!important;
+    border-radius:11px!important;
+    border:1px solid rgba(120,85,10,.55)!important;
+    background:linear-gradient(180deg,#f6d878,#c9972b)!important;
+    color:#2a1c00!important;
+    box-shadow:0 2px 0 #8a6414,0 4px 8px rgba(0,0,0,.18)!important
+  }
+  html body #navBar .nav-btn:active {
+    transform:translateY(2px)!important;
+    box-shadow:0 0 0 #8a6414!important
+  }
+  html body #navBar .nav-jump-wrap {
+    flex:0 0 auto!important;
+    width:100%!important;
+    min-height:0!important;
+    padding:3px!important;
+    border-radius:11px!important;
+    background:#fffdf5!important;
+    border:1px solid rgba(160,120,32,.55)!important;
+    box-sizing:border-box!important
+  }
+  html body #navBar .nav-jump-input {
+    width:100%!important;
+    max-width:none!important;
+    height:34px!important;
+    padding:0 2px!important;
+    font-size:.85rem!important;
+    text-align:center!important;
+    box-sizing:border-box!important
+  }
+  
+  html body div#readerView.immersive .page-image-area,html body div#readerView.rm-landscape-big .page-image-area {
+    position:fixed!important;
+    inset:0!important;
+    width:100vw!important;
+    height:100dvh!important;
+    min-height:0!important;
+    padding:0!important;
+    margin:0!important;
+    z-index:2500!important;
+    overflow:hidden!important;
+    display:block!important;
+    background:var(--rm-paper,#fffdf5)!important
+  }
+  html body div#readerView.immersive .img-wrapper,html body div#readerView.rm-landscape-big .img-wrapper {
+    display:block!important;
+    position:relative!important;
+    width:100vw!important;
+    max-width:100vw!important;
+    height:100dvh!important;
+    max-height:100dvh!important;
+    min-height:0!important;
+    padding:0 0 env(safe-area-inset-bottom,0px)!important;
+    margin:0!important;
+    border:0!important;
+    box-shadow:none!important;
+    border-radius:0!important;
+    overflow-x:hidden!important;
+    overflow-y:auto!important;
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior:contain;
+    align-items:flex-start!important;
+    justify-content:flex-start!important;
+    background:var(--rm-paper,#fffdf5)!important
+  }
+  html body div#readerView.immersive .img-wrapper.rmz-on,html body div#readerView.rm-landscape-big .img-wrapper.rmz-on {
+    overflow-x:auto!important
+  }
+  html body div#readerView.immersive .img-wrapper .mushaf-page-img,html body div#readerView.immersive .img-wrapper.rmz-on .mushaf-page-img,html body div#readerView.rm-landscape-big .img-wrapper .mushaf-page-img,html body div#readerView.rm-landscape-big .img-wrapper.rmz-on .mushaf-page-img {
+    display:block!important;
+    width:calc(var(--rmz,1) * 100vw)!important;
+    max-width:none!important;
+    height:auto!important;
+    max-height:none!important;
+    margin:0 auto!important;
+    object-fit:contain!important;
+    object-position:top center!important;
+    border-radius:0!important
+  }
+  html.rfq-imm-land body div#navBar.nav-bar {
+    display:none!important
+  }
+}
+#rfqScrollBar {
+  display:none
+}
+html.rfq-imm-land #rfqScrollBar {
+  display:block;
+  position:fixed;
+  top:0;
+  left:0;
+  width:4px;
+  height:100dvh;
+  z-index:2600;
+  background:rgba(160,120,32,.15);
+  pointer-events:none
+}
+html.rfq-imm-land #rfqScrollBar i {
+  display:block;
+  width:100%;
+  background:linear-gradient(180deg,#f0d060,#b8912a);
+  border-radius:0 4px 4px 0;
+  height:20%
+}
