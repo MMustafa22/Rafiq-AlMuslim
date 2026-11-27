@@ -196,7 +196,7 @@ function ensureUI(){
   var style=document.createElement('style');style.textContent=css;document.head.appendChild(style);
   var total=CATALOG.items.reduce(function(a,x){return a+(Number(x.size)||0)},0);
   var p=document.createElement('section');p.id='feki';p.className='container page';
-  p.innerHTML='<div class="fk-wrap"><button class="fk-back" onclick="shPg(\'mainApp\')">← رجوع للرئيسية</button>'+
+  p.innerHTML='<div class="fk-wrap"><button class="fk-back" data-fek="1">← رجوع للرئيسية</button>'+
     '<header class="fk-head"><div class="fk-em">🎧</div><h1>د. إبراهيم الفقي</h1>'+
     '<p>سلسلة «الطريق إلى النجاح» كاملة — 28 حلقة صوتية في تطوير الذات والنجاح. استمع مباشرة، أو نزّل الحلقة على جهازك، أو احفظها داخل التطبيق للاستماع دون إنترنت.</p>'+
     '<div class="fk-meta" id="fkCount">جارٍ تجهيز فهرس الحلقات…</div>'+
@@ -248,3 +248,6 @@ function init(){try{ensureUI()}catch(e){if(window.console)console.error('[feki]'
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 window.addEventListener('beforeunload',function(){if(currentUrl)try{URL.revokeObjectURL(currentUrl)}catch(e){}});
 })();
+
+/* تفويض أحداث صفحة الفقي — بديل المعالجات المضمّنة (CSP) */
+document.addEventListener("click",function(ev){var n=ev.target;while(n&&n.nodeType===1){if(n.getAttribute&&n.getAttribute("data-fek")){if(typeof shPg==="function")shPg("mainApp");return}n=n.parentNode}},true);
