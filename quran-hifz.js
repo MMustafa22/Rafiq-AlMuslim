@@ -168,12 +168,12 @@
     return `<div class="hifz-guide" style="margin-top:14px"><b>🧠 اختبار التسميع الذاتي</b>
       <p style="margin:7px 0 10px">اختر صفحة عشوائية من بداية خطتك حتى ورد اليوم، سمّعها غيبًا، ثم افتح المصحف لتراجعها بنفسك.</p>
       <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:.78rem;color:var(--panel-text-muted)"><span>اختبارات: ${ar(attempts)}</span><span>متقن: ${ar(Number(test.mastered)||0)}</span><span>مراجعة: ${ar(Number(test.review)||0)}</span><span>نسبة الإتقان: ${ar(masteryPct)}٪</span></div>
-      <button class="hifz-primary" style="width:100%;margin-top:10px" onclick="startHifzSelfTest()">🎲 اختر صفحة وابدأ التسميع</button>
+      <button class="hifz-primary" style="width:100%;margin-top:10px" data-hf="startHifzSelfTest">🎲 اختر صفحة وابدأ التسميع</button>
       ${active ? `<div style="margin-top:12px;padding:12px;border:1px solid rgba(212,175,55,.35);border-radius:12px;text-align:center;background:rgba(212,175,55,.07)">
         <div style="font-size:.8rem;color:var(--panel-text-muted)">سمّع الصفحة غيبًا</div><strong style="display:block;margin:4px 0;color:var(--gold);font-size:1.1rem">صفحة ${ar(page)}</strong>
         <div style="font-size:.8rem;color:var(--panel-text-muted)">مدة التسميع: <b id="hifzTestElapsed">${formatDuration(elapsedSeconds(test))}</b></div>
-        <button class="hifz-secondary" style="width:100%;margin-top:9px" onclick="openHifzTestPage()">📖 افتح الصفحة في المصحف للمراجعة</button>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px"><button class="hifz-secondary" onclick="recordHifzSelfTest('mastered')">✅ أتقنتها</button><button class="hifz-secondary" onclick="recordHifzSelfTest('review')">🔁 أحتاج إلى مراجعة</button></div>
+        <button class="hifz-secondary" style="width:100%;margin-top:9px" data-hf="openHifzTestPage">📖 افتح الصفحة في المصحف للمراجعة</button>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px"><button class="hifz-secondary" data-hf="recordHifzSelfTest" data-hf-v="mastered">✅ أتقنتها</button><button class="hifz-secondary" data-hf="recordHifzSelfTest" data-hf-v="review">🔁 أحتاج إلى مراجعة</button></div>
       </div>` : `<small style="display:block;margin-top:8px;color:var(--panel-text-muted)">${esc(resultText)}${test.lastPage ? ` — صفحة ${ar(test.lastPage)}` : ""}</small>`}
       ${history.length ? `<div style="margin-top:12px"><b style="font-size:.82rem">أحدث تقييمات التسميع</b>${history.map(item => `<div style="display:flex;justify-content:space-between;gap:8px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.07);font-size:.76rem"><span>${esc(item.date || "")} — صفحة ${ar(Number(item.page)||0)}</span><b style="color:${item.result === "mastered" ? "#34d399" : "#fbbf24"}">${item.result === "mastered" ? "متقن" : "يحتاج مراجعة"}</b></div>`).join("")}</div>` : ""}
     </div>`;
@@ -209,7 +209,7 @@
     if (!plan) {
       body.innerHTML = `<div class="hifz-intro"><div class="hifz-hero">💎</div><h3>ابدأ حفظ القرآن بخطوات ثابتة</h3><p>اختر مدة مناسبة لك. التطبيق يقسم الصفحات إلى ورد يومي، ويساعدك على القراءة والتسجيل والمراجعة بدون ضغط.</p></div>
         <div class="hifz-guide"><b>طريقة الحفظ اليومية</b><ol><li>اقرأ الصفحة الجديدة نظرًا عدة مرات.</li><li>قسّم الصفحة إلى مقاطع قصيرة، واحفظ كل مقطع بالتكرار.</li><li>سمّع الصفحة غيبًا ثم راجع أخطاءك من المصحف.</li><li>ابدأ كل يوم بمراجعة ورد الأمس قبل الحفظ الجديد.</li></ol></div>
-        <div class="hifz-form"><label>مدة الخطة<select id="hifzDays"><option value="60">شهران — ${ar(10)} صفحات يوميًا تقريبًا</option><option value="90">3 أشهر — ${ar(7)} صفحات يوميًا تقريبًا</option><option value="180" selected>6 أشهر — ${ar(4)} صفحات يوميًا تقريبًا</option><option value="365">سنة — ${ar(2)} صفحة يوميًا تقريبًا</option></select></label><label>صفحة البداية<input id="hifzStartPage" type="number" min="1" max="604" value="1"></label><button class="hifz-primary" onclick="startHifzPlan()">ابدأ خطة الحفظ</button></div>`;
+        <div class="hifz-form"><label>مدة الخطة<select id="hifzDays"><option value="60">شهران — ${ar(10)} صفحات يوميًا تقريبًا</option><option value="90">3 أشهر — ${ar(7)} صفحات يوميًا تقريبًا</option><option value="180" selected>6 أشهر — ${ar(4)} صفحات يوميًا تقريبًا</option><option value="365">سنة — ${ar(2)} صفحة يوميًا تقريبًا</option></select></label><label>صفحة البداية<input id="hifzStartPage" type="number" min="1" max="604" value="1"></label><button class="hifz-primary" data-hf="startHifzPlan">ابدأ خطة الحفظ</button></div>`;
       return;
     }
     const r = range(plan);
@@ -223,14 +223,30 @@
     body.innerHTML = `<div class="hifz-current"><div class="hifz-hero">💎</div><div><b>خطة حفظ القرآن</b><span>ورد اليوم — اليوم ${ar(Math.min(totalDays, r.index + 1))} من ${ar(totalDays)}</span></div></div>
       <div class="hifz-range"><span>ورد اليوم</span><strong>من صفحة ${ar(r.from)} إلى ${ar(r.to)}</strong><small>${ar(plan.pagesPerDay)} صفحات تقريبًا</small></div>
       <div class="hifz-progress"><div><span>التقدم المسجل في الخطة</span><b>${ar(pct)}٪</b></div><i style="width:${pct}%"></i><small>أنجزت ${ar(doneCount)} يومًا كاملًا من ${ar(totalDays)}</small></div>
-      <div class="hifz-actions"><button class="hifz-primary" onclick="openHifzToday()">📖 افتح ورد اليوم</button><button class="hifz-secondary ${isDone ? "done" : ""}" onclick="markHifzToday()">${isDone ? "✅ تم تسجيل ورد اليوم" : "✓ سجلت الورد كاملًا"}</button></div>
-      <div class="hifz-guide" style="margin-top:10px"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px"><span>إنجاز ورد اليوم: <b style="color:var(--gold)">${ar(todayStat.pct)}٪</b> — ${ar(todayStat.count)} من ${ar(todayStat.goal)} صفحات</span><span style="display:flex;gap:6px"><button class="hifz-secondary" aria-label="تقليل التقدم صفحة" onclick="updateHifzTodayProgress(-1)">−</button><button class="hifz-secondary" onclick="updateHifzTodayProgress(1)">＋ صفحة</button></span></div></div>
+      <div class="hifz-actions"><button class="hifz-primary" data-hf="openHifzToday">📖 افتح ورد اليوم</button><button class="hifz-secondary ${isDone ? "done" : ""}" data-hf="markHifzToday">${isDone ? "✅ تم تسجيل ورد اليوم" : "✓ سجلت الورد كاملًا"}</button></div>
+      <div class="hifz-guide" style="margin-top:10px"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px"><span>إنجاز ورد اليوم: <b style="color:var(--gold)">${ar(todayStat.pct)}٪</b> — ${ar(todayStat.count)} من ${ar(todayStat.goal)} صفحات</span><span style="display:flex;gap:6px"><button class="hifz-secondary" aria-label="تقليل التقدم صفحة" data-hf="updateHifzTodayProgress" data-hf-v="-1">−</button><button class="hifz-secondary" data-hf="updateHifzTodayProgress" data-hf-v="1">＋ صفحة</button></span></div></div>
       ${renderHifzStats(plan, test, r, doneCount, totalDays)}
       ${renderSelfTest(test, plan, r)}
       <div class="hifz-guide"><b>نظام المراجعة المقترح</b><ol><li>مراجعة ورد الأمس قبل الجديد.</li><li>مراجعة آخر 5 صفحات في نهاية كل أسبوع.</li><li>خصص يومًا أسبوعيًا للمراجعة فقط إذا شعرت بتراكم الورد.</li><li>لا تنتقل للصفحة التالية حتى تستطيع تسميع السابقة بثبات.</li></ol></div>
-      <div class="hifz-footer"><button onclick="resetHifzPlan()">إلغاء الخطة</button><button onclick="closeHifzPanel()">إغلاق</button></div>`;
+      <div class="hifz-footer"><button data-hf="resetHifzPlan">إلغاء الخطة</button><button data-hf="closeHifzPanel">إغلاق</button></div>`;
     startTestClockIfNeeded();
   }
+  /* تفويض أحداث خطة الحفظ — بديل المعالجات المضمّنة (CSP) */
+  document.addEventListener("click", function (ev) {
+    var n = ev.target;
+    while (n && n.nodeType === 1) {
+      var a = n.getAttribute && n.getAttribute("data-hf");
+      if (a) {
+        var v = n.getAttribute("data-hf-v"), f = window[a];
+        if (typeof f === "function") {
+          try { f(v === null ? undefined : (/^-?\d+$/.test(v) ? Number(v) : v)); }
+          catch (e) { try { console.debug("hf-action", a, e && e.message); } catch (_e) {} }
+        }
+        return;
+      }
+      n = n.parentNode;
+    }
+  }, true);
   window.openHifzPanel = openHifzPanel;
   window.closeHifzPanel = closeHifzPanel;
   window.startHifzPlan = startHifzPlan;
