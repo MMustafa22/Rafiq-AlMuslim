@@ -390,10 +390,10 @@
     ov.innerHTML =
       '<div id="zakatBox">' +
         '<div class="zk-hd"><div><h2>🧮 حاسبة الزكاة</h2><small>اختر نوع الزكاة وأدخل ما تملك — نحسبها لك فورًا</small></div>' +
-        '<button class="zk-x" onclick="closeZakat()">✕</button></div>' +
+        '<button class="zk-x" data-zk="close">✕</button></div>' +
         '<div class="zk-card"><h3>اختر نوع الزكاة</h3><div class="zk-types" id="zkTypes"></div></div>' +
         '<div class="zk-card" id="zkFieldsCard"><h3 id="zkFieldsTitle"></h3><div id="zkFields"></div>' +
-          '<button class="zk-calc" onclick="zkCalc()">احسب الزكاة</button></div>' +
+          '<button class="zk-calc" data-zk="calc">احسب الزكاة</button></div>' +
         '<div id="zakatResult"></div>' +
       '</div>';
     document.body.appendChild(ov);
@@ -409,7 +409,7 @@
     var wrap = document.getElementById("zkTypes");
     wrap.innerHTML = TYPES.map(function (t) {
       return '<button class="zk-type' + (t.id === currentType ? " on" : "") + '" data-id="' + t.id +
-             '" onclick="zkSelect(\'' + t.id + '\')"><span>' + t.icon + '</span>' + t.label + "</button>";
+             '" data-zk="select" data-zk-id="' + t.id + '"><span>' + t.icon + '</span>' + t.label + "</button>";
     }).join("");
   }
 
@@ -417,17 +417,17 @@
     var list = FIELDS[currentType] || [];
     var html = list.map(function (f) {
       return '<div class="zk-row"><label>' + f.l + (f.i ? "<i>" + f.i + "</i>" : "") +
-             '</label><input type="number" id="' + f.id + '" placeholder="0" inputmode="decimal" min="0" step="any" oninput="zkCalc()"></div>';
+             '</label><input type="number" id="' + f.id + '" placeholder="0" inputmode="decimal" min="0" step="any" data-zk="calc"></div>';
     }).join("");
     if (currentType === "harvest") {
       html += '<div class="zk-row"><label>هل ريّيت النبت بدون نفقة؟<i>فتنقص النسبة إلى 5%</i></label>' +
-              '<input type="checkbox" id="zkIrrigated" onchange="zkCalc()"></div>';
+              '<input type="checkbox" id="zkIrrigated" data-zk="calc"></div>';
     }
     if (currentType === "livestock") {
       html += '<div class="zk-row"><label>نوع الماشية</label><span style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end">' +
-        '<label style="font-size:.76rem;display:flex;align-items:center;gap:4px"><input type="radio" name="zkAnimal" value="camel" checked onchange="zkCalc()"> إبل</label>' +
-        '<label style="font-size:.76rem;display:flex;align-items:center;gap:4px"><input type="radio" name="zkAnimal" value="cattle" onchange="zkCalc()"> بقر</label>' +
-        '<label style="font-size:.76rem;display:flex;align-items:center;gap:4px"><input type="radio" name="zkAnimal" value="sheep" onchange="zkCalc()"> غنم</label>' +
+        '<label style="font-size:.76rem;display:flex;align-items:center;gap:4px"><input type="radio" name="zkAnimal" value="camel" checked data-zk="calc"> إبل</label>' +
+        '<label style="font-size:.76rem;display:flex;align-items:center;gap:4px"><input type="radio" name="zkAnimal" value="cattle" data-zk="calc"> بقر</label>' +
+        '<label style="font-size:.76rem;display:flex;align-items:center;gap:4px"><input type="radio" name="zkAnimal" value="sheep" data-zk="calc"> غنم</label>' +
         '</span></div>';
     }
     var legend = {
@@ -462,6 +462,7 @@
     }).join("") + "</div>";
   }
 
+["click","input","change"].forEach(function(t){document.addEventListener(t,function(ev){var n=ev.target;while(n&&n.nodeType===1){var a=n.getAttribute&&n.getAttribute("data-zk");if(a){try{if(a==="calc")zkCalc();else if(a==="close")closeZakat();else if(a==="select")zkSelect(n.getAttribute("data-zk-id"));}catch(e){try{console.debug("zk-action",a,e&&e.message)}catch(_e){}}return}n=n.parentNode}},true)});
   window.zkCalc = function () {
     var res = document.getElementById("zakatResult");
     if (!res) return;
