@@ -555,7 +555,7 @@ html[data-mode="light"] .gold{color:#8a6408}
     var box=$('#bmRes');
     if(!S.bm.length){box.innerHTML='<div class="hint">لا توجد علامات بعد.</div>';return}
     box.innerHTML=S.bm.slice().sort(function(a,b){return a-b}).map(function(i){
-      return '<div class="res-item" onclick="closePanel(\'bookmarkPanel\');openChapter('+i+')"><b>الباب '+(i+1)+'</b><span>'+esc(CH[i].title)+'</span></div>';
+      return '<div class="res-item" data-rfq-e="click" data-rfq-h="h27" data-rfq-n="1" data-rfq-v1="'+i+'"><b>الباب '+(i+1)+'</b><span>'+esc(CH[i].title)+'</span></div>';
     }).join('');
   }
 
@@ -585,7 +585,7 @@ html[data-mode="light"] .gold{color:#8a6408}
       }
     }
     if(!res.length){box.innerHTML='<div class="hint">لا نتائج لـ «'+esc(q)+'»</div>';return}
-    box.innerHTML=res.map(function(r){return '<div class="res-item" onclick="closePanel(\'searchPanel\');openChapter('+r.i+')"><b>'+esc(r.title)+'</b><span>'+r.snip+'</span></div>'}).join('');
+    box.innerHTML=res.map(function(r){return '<div class="res-item" data-rfq-e="click" data-rfq-h="h28" data-rfq-n="1" data-rfq-v1="'+r.i+'"><b>'+esc(r.title)+'</b><span>'+r.snip+'</span></div>'}).join('');
   }
 
   function applyFs(){
@@ -645,6 +645,8 @@ H["h23"]=function(event,$1){openChapter($1)};
 H["h24"]=function(event,$1){toggleBm($1)};
 H["h25"]=function(event,$1){copyChapter($1)};
 H["h26"]=function(event,$1){markDone($1)};
+H["h27"]=function(event,$1){closePanel('bookmarkPanel');openChapter($1)};
+H["h28"]=function(event,$1){closePanel('searchPanel');openChapter($1)};
 var T=["click","input"];
 function coerce(v){if(/^(true|false|null)$/.test(v)||/^-?(\d+)(\.\d+)?$/.test(v)){try{return JSON.parse(v)}catch(e){}}return v}
 function run(el,ev){var f=H[el.getAttribute("data-rfq-h")];if(!f)return;var c=parseInt(el.getAttribute("data-rfq-n")||"0",10);var a=[ev];for(var i=1;i<=c;i++){a.push(coerce(el.getAttribute("data-rfq-v"+i)||""))}var r;try{r=f.apply(el,a)}catch(err){try{console.debug("rfq-handler",el.getAttribute("data-rfq-h"),err&&err.message)}catch(_e){}}if(r===false){ev.preventDefault();ev.stopPropagation()}}
