@@ -48,7 +48,7 @@ body.dark-mode .src-u{color:#7ab0ff}
 <body>
 <div class="wrap" role="main">
   <div class="top">
-    <a class="back" href="./index.html" onclick="if(history.length>1&&document.referrer&&document.referrer.indexOf(location.origin)===0){history.back();return false}">→ الرئيسية</a>
+    <a class="back" href="./index.html" data-rfq-e="click" data-rfq-h="h1">→ الرئيسية</a>
     <h1>📚 المصادر والمراجع
       <small>كل المحتوى الشرعي في «رفيق المسلم» منقول من هذه المصادر المعتمدة</small>
     </h1>
@@ -68,5 +68,14 @@ document.addEventListener('DOMContentLoaded', function () {
   if (window.RafiqSources) window.RafiqSources.render('srcBody', 'srcNote');
 });
 </script>
+<script id="rfq-delegation">(function(){
+var H={};
+H["h1"]=function(event){if(history.length>1&&document.referrer&&document.referrer.indexOf(location.origin)===0){history.back();return false}};
+var T=["click"];
+function coerce(v){if(/^(true|false|null)$/.test(v)||/^-?(\d+)(\.\d+)?$/.test(v)){try{return JSON.parse(v)}catch(e){}}return v}
+function run(el,ev){var f=H[el.getAttribute("data-rfq-h")];if(!f)return;var c=parseInt(el.getAttribute("data-rfq-n")||"0",10);var a=[ev];for(var i=1;i<=c;i++){a.push(coerce(el.getAttribute("data-rfq-v"+i)||""))}var r;try{r=f.apply(el,a)}catch(err){try{console.debug("rfq-handler",el.getAttribute("data-rfq-h"),err&&err.message)}catch(_e){}}if(r===false){ev.preventDefault();ev.stopPropagation()}}
+function walk(ev,t){var n=ev.target;while(n&&n.nodeType===1){if(n.getAttribute("data-rfq-e")===t){run(n,ev);return}n=n.parentNode}}
+T.forEach(function(t){document.addEventListener(t,function(ev){walk(ev,t)},true)});
+})();</script>
 </body>
 </html>

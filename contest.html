@@ -215,7 +215,7 @@ html[data-mode="light"] .mchip.on{color:#fff}
 </head>
 <body>
 <header class="top">
-  <button class="hbtn" onclick="return goToRafiqHome()" aria-label="العودة إلى الصفحة الرئيسية">
+  <button class="hbtn" data-rfq-e="click" data-rfq-h="h1" aria-label="العودة إلى الصفحة الرئيسية">
     <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
     <span>الرئيسية</span>
   </button>
@@ -223,7 +223,7 @@ html[data-mode="light"] .mchip.on{color:#fff}
     <div class="logo">🏆</div>
     <div><b>تحدّي رفيق المسلم</b><span>تحدّيك مع نفسك — بلا حسابات</span></div>
   </div>
-  <button class="hbtn" id="themeBtn" onclick="toggleTheme()" aria-label="تبديل الوضع"><span id="themeIco">☀️</span></button>
+  <button class="hbtn" id="themeBtn" data-rfq-e="click" data-rfq-h="h2" aria-label="تبديل الوضع"><span id="themeIco">☀️</span></button>
 </header>
 
 <div class="wrap" role="main">
@@ -238,7 +238,7 @@ html[data-mode="light"] .mchip.on{color:#fff}
   <section class="card legacy hidden" id="legacyCard">
     <h2>🧹 بيانات حساب قديمة على جهازك</h2>
     <div class="sub">كانت المسابقة تحفظ على هذا الجهاز بريدًا ورقم واتساب وكلمة مرور مشفّرة. لم نعد نحتاجها (التحدّي أصبح شخصيًا)، ويمكنك حذفها الآن. نقاطك لن تتأثر لأنها تُقرأ من سجل أيامك.</div>
-    <button class="btn danger" onclick="purgeLegacy()">🗑️ حذف بيانات الحساب القديم</button>
+    <button class="btn danger" data-rfq-e="click" data-rfq-h="h3">🗑️ حذف بيانات الحساب القديم</button>
   </section>
 
   <!-- هدف الشهر -->
@@ -250,7 +250,7 @@ html[data-mode="light"] .mchip.on{color:#fff}
     <div class="note" id="goalHint">—</div>
     <div class="goal-edit">
       <input id="goalInput" type="number" inputmode="numeric" min="100" max="100000" step="100" aria-label="هدف الشهر بالنقاط" placeholder="الهدف بالنقاط">
-      <button class="btn gold mini" onclick="saveGoal()">حفظ الهدف</button>
+      <button class="btn gold mini" data-rfq-e="click" data-rfq-h="h4">حفظ الهدف</button>
     </div>
   </section>
 
@@ -269,8 +269,8 @@ html[data-mode="light"] .mchip.on{color:#fff}
     <div id="trend" class="trend hidden"></div>
     <div class="parts" id="meParts"></div>
     <div class="grid-actions">
-      <button class="btn primary" onclick="refresh(true)">🔄 تحديث نقاطي الآن</button>
-      <button class="btn soft" onclick="exportProgress()">📤 تصدير تقدّمي</button>
+      <button class="btn primary" data-rfq-e="click" data-rfq-h="h5">🔄 تحديث نقاطي الآن</button>
+      <button class="btn soft" data-rfq-e="click" data-rfq-h="h6">📤 تصدير تقدّمي</button>
     </div>
     <div class="note" id="syncNote">تُقرأ نقاطك من سجل رفيق المسلم على هذا الجهاز.</div>
   </section>
@@ -505,5 +505,19 @@ html[data-mode="light"] .mchip.on{color:#fff}
   document.addEventListener('visibilitychange',function(){if(!document.hidden)window.refresh(false)});
 })();
 </script>
+<script id="rfq-delegation">(function(){
+var H={};
+H["h1"]=function(event){return goToRafiqHome()};
+H["h2"]=function(event){toggleTheme()};
+H["h3"]=function(event){purgeLegacy()};
+H["h4"]=function(event){saveGoal()};
+H["h5"]=function(event){refresh(true)};
+H["h6"]=function(event){exportProgress()};
+var T=["click"];
+function coerce(v){if(/^(true|false|null)$/.test(v)||/^-?(\d+)(\.\d+)?$/.test(v)){try{return JSON.parse(v)}catch(e){}}return v}
+function run(el,ev){var f=H[el.getAttribute("data-rfq-h")];if(!f)return;var c=parseInt(el.getAttribute("data-rfq-n")||"0",10);var a=[ev];for(var i=1;i<=c;i++){a.push(coerce(el.getAttribute("data-rfq-v"+i)||""))}var r;try{r=f.apply(el,a)}catch(err){try{console.debug("rfq-handler",el.getAttribute("data-rfq-h"),err&&err.message)}catch(_e){}}if(r===false){ev.preventDefault();ev.stopPropagation()}}
+function walk(ev,t){var n=ev.target;while(n&&n.nodeType===1){if(n.getAttribute("data-rfq-e")===t){run(n,ev);return}n=n.parentNode}}
+T.forEach(function(t){document.addEventListener(t,function(ev){walk(ev,t)},true)});
+})();</script>
 </body>
 </html>
