@@ -132,7 +132,7 @@ function upReport(){
       chips.innerHTML=Object.keys(months).sort().reverse().map(function(k){
         var p=k.split("-");
         var active=k===_rfqReportMonth;
-        return '<button type="button" data-m="'+k+'" onclick="_rfqPickMonth(this.dataset.m)" style="margin-inline-end:6px;padding:7px 12px;border-radius:999px;border:1px solid '+(active?"#fbbf24":"rgba(255,255,255,.18)")+';background:'+(active?"rgba(251,191,36,.16)":"transparent")+';color:'+(active?"#fcd34d":"#cbd5e1")+';font:700 .78rem Tajawal,sans-serif;cursor:pointer">'+_rfqMonthLabel(parseInt(p[0],10),parseInt(p[1],10))+'</button>';
+        return '<button type="button" data-m="'+k+'" data-pm="1" style="margin-inline-end:6px;padding:7px 12px;border-radius:999px;border:1px solid '+(active?"#fbbf24":"rgba(255,255,255,.18)")+';background:'+(active?"rgba(251,191,36,.16)":"transparent")+';color:'+(active?"#fcd34d":"#cbd5e1")+';font:700 .78rem Tajawal,sans-serif;cursor:pointer">'+_rfqMonthLabel(parseInt(p[0],10),parseInt(p[1],10))+'</button>';
       }).join("");
     }
     var year=h.y,yrTotal=0,yrDays=0,yrBest=0;
@@ -224,3 +224,6 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
   document.addEventListener("visibilitychange",function(){if(!document.hidden)setTimeout(_refreshDateOnNewDay,400)});
   window.addEventListener("focus",_refreshDateOnNewDay,{passive:true});
 })();
+
+/* تفويض أحداث منتقي الشهر في التقرير — بديل المعالجات المضمّنة (CSP) */
+document.addEventListener("click",function(ev){var n=ev.target;while(n&&n.nodeType===1){if(n.getAttribute&&n.getAttribute("data-pm")){try{_rfqPickMonth(n.dataset.m)}catch(e){try{console.debug("pm-action",e&&e.message)}catch(_e){}}return}n=n.parentNode}},true);
