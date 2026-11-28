@@ -829,23 +829,23 @@ body:not(.dark-mode) .tafseer-source {
   }
   html body div#navBar.nav-bar {
     position:fixed!important;
-    top:50%!important;
+    top:4px!important;
     right:0!important;
     left:auto!important;
-    bottom:auto!important;
-    transform:translateY(-50%)!important;
+    bottom:4px!important;
+    transform:none!important;
     display:flex!important;
     flex-direction:column!important;
     align-items:stretch!important;
     justify-content:flex-start!important;
     flex-wrap:nowrap!important;
-    gap:6px!important;
+    gap:4px!important;
     width:calc(var(--rfq-side) - 4px)!important;
     min-width:0!important;
     max-width:none!important;
     height:auto!important;
     min-height:0!important;
-    max-height:calc(100dvh - 10px)!important;
+    max-height:none!important;
     overflow-y:auto!important;
     overflow-x:hidden!important;
     -webkit-overflow-scrolling:touch;
@@ -873,13 +873,13 @@ body:not(.dark-mode) .tafseer-source {
     width:100%!important;
     min-width:0!important;
     max-width:none!important;
-    min-height:38px!important;
-    padding:4px 2px!important;
+    min-height:28px!important;
+    padding:2px 2px!important;
     writing-mode:horizontal-tb!important;
     text-orientation:mixed!important;
     white-space:normal!important;
     word-break:keep-all!important;
-    font:800 .62rem/1.25 Tajawal,sans-serif!important;
+    font:800 .55rem/1.18 Tajawal,sans-serif!important;
     border-radius:11px!important;
     border:1px solid rgba(120,85,10,.55)!important;
     background:linear-gradient(180deg,#f6d878,#c9972b)!important;
@@ -894,7 +894,7 @@ body:not(.dark-mode) .tafseer-source {
     flex:0 0 auto!important;
     width:100%!important;
     min-height:0!important;
-    padding:3px!important;
+    padding:2px!important;
     border-radius:11px!important;
     background:#fffdf5!important;
     border:1px solid rgba(160,120,32,.55)!important;
@@ -903,9 +903,9 @@ body:not(.dark-mode) .tafseer-source {
   html body #navBar .nav-jump-input {
     width:100%!important;
     max-width:none!important;
-    height:34px!important;
+    height:26px!important;
     padding:0 2px!important;
-    font-size:.85rem!important;
+    font-size:.78rem!important;
     text-align:center!important;
     box-sizing:border-box!important
   }

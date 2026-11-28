@@ -237,8 +237,9 @@ body:not(.dark-mode) .mp-btn.muted{
   html body div#readerView.mushaf-container[style*="display: flex"] {
     display: grid !important;
     grid-template-columns: minmax(0, clamp(152px, 30vw, 236px)) minmax(0, 1fr) !important;
-    grid-template-rows: minmax(0, 1fr) auto auto !important;
+    grid-template-rows: auto auto minmax(0, 1fr) !important;
     grid-template-areas: "pl page" "nav page" "tf page" !important;
+    align-content: stretch !important;
     gap: 5px !important;
     height: 100dvh !important;
     max-height: 100dvh !important;
@@ -257,7 +258,8 @@ body:not(.dark-mode) .mp-btn.muted{
     display: block !important;
     margin: 0 !important;
     padding: 5px 6px 6px !important;
-    max-height: 100% !important;
+    align-self: start !important;
+    max-height: 46dvh !important;
     overflow-y: auto !important;
     overflow-x: hidden !important;
     -webkit-overflow-scrolling: touch;
@@ -267,7 +269,13 @@ body:not(.dark-mode) .mp-btn.muted{
     backdrop-filter: none !important;
     background: linear-gradient(180deg, rgba(8, 18, 40, .92), rgba(6, 12, 24, .92)) !important;
   }
-  html body div#readerView .mp-unified { max-width: none !important; gap: 4px !important; }
+  /* لا نسمح لأي عنصر داخل المشغّل بالانضغاط: الانضغاط كان يقصّ أزرار التحكم
+     (تشغيل/تكرار/صوت/تقدّم) في الوضع الأفقي على الشاشات القصيرة. */
+  html body div#readerView .mp-unified { max-width: none !important; gap: 5px !important; display: flex !important; flex-direction: column !important; }
+  html body div#readerView .mp-unified > * { flex: 0 0 auto !important; min-height: 0 !important; }
+  html body div#readerView .audio-player-container { display: flex !important; flex-direction: column !important; gap: 4px !important; }
+  html body div#readerView .mp-controls { flex: 0 0 auto !important; }
+  html body div#readerView .mp-progress-row { flex: 0 0 auto !important; }
   html body div#readerView .rm-header-bar { padding: 3px 6px !important; border-radius: 8px !important; gap: 6px !important; }
   html body div#readerView .rm-header-bar .rm-bar-title { font-size: .72rem !important; }
   html body div#readerView .rm-header-bar .rm-bar-arrow { width: 22px !important; height: 22px !important; font-size: .7rem !important; }
@@ -344,9 +352,11 @@ body:not(.dark-mode) .mp-btn.muted{
   html body div#readerView #navBar .nav-jump-input { width: 100% !important; max-width: none !important; height: 28px !important; font-size: .72rem !important; }
   html body div#readerView.mushaf-container[style*="display: flex"] > .tafseer-btn-wrap {
     grid-area: tf !important;
-    padding: 0 !important;
+    align-self: end !important;
+    padding: 0 0 2px !important;
     gap: 4px !important;
     justify-content: stretch !important;
+    min-height: 34px !important;
   }
   html body div#readerView .tafseer-btn {
     flex: 1 1 0 !important;
