@@ -86,7 +86,7 @@ body:not(.dark-mode) .mp-vol-wrap {
 .qt-header{display:grid;grid-template-columns:1fr auto;gap:8px 14px;align-items:center;border-bottom:1px solid rgba(160,120,32,.2);padding-bottom:12px;margin-bottom:8px}.qt-header strong{display:block;font-size:1.15rem;color:#72500d}.qt-header small{display:block;color:#756a55;margin-top:4px}.qt-select-label{grid-column:1/-1;font-size:.83rem;color:#66552e;font-weight:700}.qt-header select{grid-column:1/-1;width:100%;min-height:44px;border:1px solid rgba(160,120,32,.36);border-radius:10px;padding:7px 10px;background:#fff;color:#211a0b;font:700 .92rem Tajawal,sans-serif}
 .qt-content{font-size:1.04rem;line-height:1.9}.qt-ayah{padding:10px 3px;border-bottom:1px solid rgba(160,120,32,.13)}.qt-ayah:last-child{border-bottom:0}.qt-num{display:inline-flex;align-items:center;justify-content:center;line-height:1;flex-shrink:0;min-width:1.8em;height:1.8em;margin-inline-end:7px;border-radius:50%;background:#f0e2b6;color:#61430b;font-weight:800;font-size:.8em}.qt-empty,.qt-status{color:#71664e;text-align:center;padding:20px 8px}.qt-attribution{font-size:.72rem;color:#847c69;border-top:1px solid rgba(160,120,32,.15);padding-top:10px;margin-top:8px;line-height:1.7}
 html[lang="en"] .quran-translation-panel,html[lang="fr"] .quran-translation-panel{direction:ltr;text-align:left}html[lang="en"] .quran-translation-panel,html[lang="fr"] .rfq-language-control select{font-family:Arial,sans-serif}html[lang="ur"] .quran-translation-panel,html[lang="ur"] .rfq-language-control select{font-family:"Noto Nastaliq Urdu","Noto Naskh Arabic",serif}html[lang="ur"] .qt-attribution{line-height:2.2;padding-bottom:3px}html[lang="ur"] .qt-num{font-family:Arial,sans-serif}
-@media(max-width:850px){.quran-reading-split{grid-template-columns:minmax(0,1fr);gap:12px}.quran-translation-panel{position:relative;top:auto;max-height:none}}
+@media(max-width:850px),(orientation:landscape) and (max-height:520px){.quran-reading-split{grid-template-columns:minmax(0,1fr);gap:12px}.quran-translation-panel{position:relative;top:auto;max-height:none}}
 /* تخطيط ملء الشاشة: الصفحة الرئيسية والقارئ لا ينحصران في عمود ضيق */
 html,body{width:100%;min-height:100%;margin:0}
 body{display:block!important;justify-content:initial!important;background:#f4f0e4!important}
@@ -236,7 +236,7 @@ body:not(.dark-mode) .mp-btn.muted{
 @media (orientation: landscape) and (max-height: 500px) {
   html body div#readerView.mushaf-container[style*="display: flex"] {
     display: grid !important;
-    grid-template-columns: minmax(0, clamp(152px, 30vw, 236px)) minmax(0, 1fr) !important;
+    grid-template-columns: minmax(0, clamp(118px, 16vw, 150px)) minmax(0, 1fr) !important;
     grid-template-rows: auto auto minmax(0, 1fr) !important;
     grid-template-areas: "pl page" "nav page" "tf page" !important;
     align-content: stretch !important;
@@ -377,24 +377,39 @@ body:not(.dark-mode) .mp-btn.muted{
     margin: 0 !important;
     padding: 0 !important;
     gap: 0 !important;
-    overflow: hidden !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
   }
-  html body div#readerView .quran-translation-panel { display: none !important; }
+  /* الترجمة تحت صفحة المصحف وبعرض الشاشة كاملًا — مش بجانبها */
+  html body div#readerView .quran-translation-panel {
+    display: block !important;
+    position: static !important;
+    top: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: none !important;
+    margin: 8px 0 4px !important;
+    padding: 10px 12px !important;
+    overflow: visible !important;
+    border-radius: 12px !important;
+    box-sizing: border-box !important;
+  }
+  html body div#readerView .quran-translation-panel.is-hidden { display: none !important; }
+  html body div#readerView .quran-translation-panel .qt-content { font-size: 1rem !important; line-height: 1.85 !important; }
   html body div#readerView .page-image-area {
     position: relative !important;
     inset: auto !important;
     display: block !important;
     width: 100% !important;
-    height: 100% !important;
-    max-height: 100% !important;
+    height: auto !important;
+    max-height: none !important;
     min-height: 0 !important;
     box-sizing: border-box !important;
     margin: 0 !important;
     padding: 0 !important;
-    overflow-x: auto !important;
-    overflow-y: auto !important;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior: contain;
+    overflow: visible !important;
     border-radius: 8px !important;
     background: #f4efdf !important;
   }
